@@ -83,7 +83,7 @@ class HeatConnector(BaseConnector):
             self._session_key = response['sessionKey']
 
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not connect to the Help Desk API endpoint', e), None)
+            return action_result.set_status(phantom.APP_ERROR, 'Could not connect to the Help Desk API endpoint', e)
 
         return phantom.APP_SUCCESS
 
