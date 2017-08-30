@@ -83,7 +83,7 @@ class HeatConnector(BaseConnector):
             self._session_key = response['sessionKey']
 
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, 'Could not connect to the LogRhythm API endpoint', e)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not connect to the Help Desk API endpoint', e), None)
 
         return phantom.APP_SUCCESS
 
@@ -97,7 +97,7 @@ class HeatConnector(BaseConnector):
         try:
             response = soap_call(*soap_args)
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'SOAP call to LogRhythm failed', e), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, 'SOAP call to Help Desk failed', e), None)
 
         return True, self._suds_to_dict(response)
 
