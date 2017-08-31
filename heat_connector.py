@@ -59,7 +59,7 @@ class HeatConnector(BaseConnector):
         # Access values in asset config by the name
         self._username = config['username']
         self._password = config['password']
-        self._base_url = config['url'] + '' if config['url'].endswith('/') else '/'
+        self._base_url = config['url'] + ('' if config['url'].endswith('/') else '/')
         self._tenant = self._base_url.replace('/', '').replace('https:', '')
 
         return phantom.APP_SUCCESS
