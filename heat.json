@@ -1,11 +1,11 @@
 {
     "appid": "9e367f7a-98ca-43e8-8095-396f15f7fe1f",
-    "name": "Ivanti Help Desk",
+    "name": "Ivanti ITSM",
     "description": "This app supports ingestion and several ticketing actions on Ivanti Help Desk",
     "type": "ticketing",
     "product_vendor": "Ivanti",
     "logo": "ivanti.png",
-    "product_name": "Help Desk",
+    "product_name": "ITSM",
     "product_version_regex": ".*",
     "publisher": "Phantom",
     "license": "Copyright (c) Phantom Cyber Corporation 2017",
@@ -13,7 +13,7 @@
     "utctime_updated": "2017-06-23T19:27:02.892841Z",
     "package_name": "phantom_heat",
     "main_module": "heat_connector.pyc",
-    "min_phantom_version": "2.1.486",
+    "min_phantom_version": "3.0.247",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
         "wheel": [
