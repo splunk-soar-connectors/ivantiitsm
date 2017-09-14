@@ -352,6 +352,10 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
+        num_tickets = len(response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', []))
+        summary = action_result.update_summary({})
+        summary['num_tickets'] = num_tickets
+
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_create_ticket(self, param):
@@ -484,7 +488,7 @@ class HeatConnector(BaseConnector):
             if not attach_result:
                 return attach_result
 
-        return action_result.set_status(phantom.APP_SUCCESS)
+        return action_result.set_status(phantom.APP_SUCCESS, "Ticket successfully updated")
 
     def _handle_get_user(self, param):
 
@@ -539,6 +543,10 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
+        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', [{}])[0].get('WebServiceBusinessObject', [{}])[0].get('RecID', 'N/A')
+        summary = action_result.update_summary({})
+        summary['user_rec_id'] = user_id
+
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_users(self, param):
@@ -569,6 +577,10 @@ class HeatConnector(BaseConnector):
 
         if response:
             action_result.add_data(response)
+
+        num_users = len(response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', []))
+        summary = action_result.update_summary({})
+        summary['num_users'] = num_users
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
