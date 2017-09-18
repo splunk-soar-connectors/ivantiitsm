@@ -876,7 +876,7 @@
                     "data_path": "action_result.parameter.customer",
                     "data_type": "string",
                     "contains": [
-                        "md5"
+                        "heat user id"
                     ],
                     "example_values": [
                         "470CB45210464576A5B65977675352FB",
@@ -903,8 +903,7 @@
                     "data_path": "action_result.parameter.attachment",
                     "data_type": "string",
                     "contains": [
-                        "vault id",
-                        "sha1"
+                        "vault id"
                     ],
                     "example_values": [
                         "cc502b80df6f5d8b67c267bccf1731061462a954",
@@ -2112,8 +2111,7 @@
                     "data_path": "action_result.parameter.id",
                     "data_type": "string",
                     "contains": [
-                        "heat ticket id",
-                        "md5"
+                        "heat ticket id"
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
@@ -3655,7 +3653,6 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.RecID",
                     "data_type": "string",
                     "contains": [
-                        "md5",
                         "heat user id"
                     ],
                     "example_values": [
@@ -4826,7 +4823,6 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.RecID",
                     "data_type": "string",
                     "contains": [
-                        "md5",
                         "heat user id"
                     ],
                     "example_values": [
