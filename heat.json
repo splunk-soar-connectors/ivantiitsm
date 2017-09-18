@@ -2397,9 +2397,6 @@
                     "data_type": "string"
                 }
             ],
-            "render": {
-                "type": "table"
-            },
             "versions": "EQ(*)"
         },
         {
