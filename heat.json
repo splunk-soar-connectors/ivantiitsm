@@ -112,7 +112,7 @@
                     "primary": true,
                     "order": 4,
                     "contains": [
-                        "heat user id"
+                        "ivanti user id"
                     ]
                 },
                 "fields": {
@@ -137,7 +137,7 @@
                     "data_type": "string",
                     "contains": [
                         "md5",
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "C19CB4544F6B4D6580F3DE802CCD5B0C",
@@ -194,8 +194,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.RecId",
                     "data_type": "string",
                     "contains": [
-                        "md5",
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "C19CB4544F6B4D6580F3DE802CCD5B0C",
@@ -876,7 +875,7 @@
                     "data_path": "action_result.parameter.customer",
                     "data_type": "string",
                     "contains": [
-                        "md5"
+                        "ivanti user id"
                     ],
                     "example_values": [
                         "470CB45210464576A5B65977675352FB",
@@ -903,8 +902,7 @@
                     "data_path": "action_result.parameter.attachment",
                     "data_type": "string",
                     "contains": [
-                        "vault id",
-                        "sha1"
+                        "vault id"
                     ],
                     "example_values": [
                         "cc502b80df6f5d8b67c267bccf1731061462a954",
@@ -1260,7 +1258,7 @@
                     "primary": true,
                     "order": 0,
                     "contains": [
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ]
                 },
                 "fields": {
@@ -1299,7 +1297,7 @@
                     "data_type": "string",
                     "contains": [
                         "md5",
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
@@ -1389,8 +1387,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.RecId",
                     "data_type": "string",
                     "contains": [
-                        "md5",
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
@@ -2084,8 +2081,7 @@
                     "data_path": "action_result.data.*.recId",
                     "data_type": "string",
                     "contains": [
-                        "md5",
-                        "heat ticket id"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
@@ -2112,8 +2108,7 @@
                     "data_path": "action_result.parameter.id",
                     "data_type": "string",
                     "contains": [
-                        "heat ticket id",
-                        "md5"
+                        "ivanti ticket id"
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
@@ -2399,9 +2394,6 @@
                     "data_type": "string"
                 }
             ],
-            "render": {
-                "type": "table"
-            },
             "versions": "EQ(*)"
         },
         {
@@ -3655,8 +3647,7 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.RecID",
                     "data_type": "string",
                     "contains": [
-                        "md5",
-                        "heat user id"
+                        "ivanti user id"
                     ],
                     "example_values": [
                         "81DE81FA404A457BA482CB97F45CE71D",
@@ -4826,8 +4817,7 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.RecID",
                     "data_type": "string",
                     "contains": [
-                        "md5",
-                        "heat user id"
+                        "ivanti user id"
                     ],
                     "example_values": [
                         "81DE81FA404A457BA482CB97F45CE71D"
