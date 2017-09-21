@@ -1,7 +1,7 @@
 {
     "appid": "9e367f7a-98ca-43e8-8095-396f15f7fe1f",
     "name": "Ivanti ITSM",
-    "description": "This app supports ingestion and several ticketing actions on Ivanti Help Desk",
+    "description": "This app integrates with Ivanti ITSM to provide ingestion and several ticketing actions",
     "type": "ticketing",
     "product_vendor": "Ivanti",
     "logo": "ivanti.png",
@@ -65,7 +65,7 @@
         {
             "action": "test connectivity",
             "identifier": "test_connectivity",
-            "description": "Validate the asset configuration for connectivity using supplied configuration.",
+            "description": "Validate the asset configuration for connectivity using supplied configuration",
             "verbose": "",
             "type": "test",
             "read_only": true,
@@ -3589,7 +3589,7 @@
         {
             "action": "on poll",
             "identifier": "on_poll",
-            "description": "Callback action for the on_poll ingest functionality.",
+            "description": "Callback action for the on_poll ingest functionality",
             "verbose": "",
             "type": "ingest",
             "read_only": true,
