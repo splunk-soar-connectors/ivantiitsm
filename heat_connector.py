@@ -41,6 +41,7 @@ class HeatConnector(BaseConnector):
         super(HeatConnector, self).__init__()
 
         self._state = None
+        self._proxy = None
         self._client = None
         self._base_url = None
         self._username = None
@@ -62,6 +63,13 @@ class HeatConnector(BaseConnector):
         self._base_url = config['url'] + ('' if config['url'].endswith('/') else '/')
         self._tenant = self._base_url.replace('/', '').replace('https:', '')
 
+        self._proxy = {}
+        env_vars = config.get('_reserved_environment_variables')
+        if 'HTTP_PROXY' in env_vars:
+            self._proxy['http'] = env_vars['HTTP_PROXY']['value']
+        if 'HTTPS_PROXY' in env_vars:
+            self._proxy['https'] = env_vars['HTTPS_PROXY']['value']
+
         return phantom.APP_SUCCESS
 
     def finalize(self):
@@ -74,7 +82,10 @@ class HeatConnector(BaseConnector):
 
         try:
 
-            self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'))
+            if self._proxy:
+                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'), proxy=self._proxy)
+            else:
+                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'))
 
             ret_val, response = self._make_soap_call(action_result, 'Connect', (self._username, self._password, self._tenant, 'Admin'))
             if not ret_val:
