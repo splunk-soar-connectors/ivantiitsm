@@ -172,15 +172,14 @@
                         "email"
                     ],
                     "example_values": [
-                        "KCho@saasitdemo.com",
-                        "jeff.kollmann@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.obj.FieldValues.Owner",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -236,7 +235,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.Subject",
                     "data_type": "string",
                     "example_values": [
-                        "I need a fake idol",
+                        "The system is down",
                         "Automated playbook ticket"
                     ]
                 },
@@ -244,7 +243,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.Symptom",
                     "data_type": "string",
                     "example_values": [
-                        "Need to mess with some heads",
+                        "BSOD",
                         "Created during an automated test"
                     ]
                 },
@@ -255,7 +254,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "TTech@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -285,14 +284,14 @@
                     "data_path": "action_result.data.*.obj.FieldValues.CreatedBy",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.obj.FieldValues.LastModBy",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -327,7 +326,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "abcd@xyz.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -480,7 +479,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -587,7 +586,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.SocialTextHeader",
                     "data_type": "string",
                     "example_values": [
-                        "Incident 11093: I need a fake idol",
+                        "Incident 11093: The system is down",
                         "Incident 11114: Automated playbook ticket"
                     ]
                 },
@@ -598,7 +597,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -630,7 +629,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "CMatthews@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -767,7 +766,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -853,7 +852,7 @@
                     "data_path": "action_result.parameter.summary",
                     "data_type": "string",
                     "example_values": [
-                        "I need a fake idol",
+                        "The system is down",
                         "Automated playbook ticket"
                     ]
                 },
@@ -886,7 +885,7 @@
                     "data_path": "action_result.parameter.description",
                     "data_type": "string",
                     "example_values": [
-                        "Need to mess with some heads",
+                        "Very long loading times",
                         "Created during an automated test"
                     ]
                 },
@@ -1497,7 +1496,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.Subject",
                     "data_type": "string",
                     "example_values": [
-                        "I need the thing",
+                        "Received generic error while running test",
                         "Automated playbook ticket"
                     ]
                 },
@@ -1563,8 +1562,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "TButler@saasitdemo.com",
-                        "jeff.kollmann@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -1585,7 +1583,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -1595,7 +1593,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "abcd@xyz.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -1632,7 +1630,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -1729,7 +1727,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.CreatedBy",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -1884,7 +1882,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.SocialTextHeader",
                     "data_type": "string",
                     "example_values": [
-                        "Incident 11092: I need the thing",
+                        "Incident 11092: Received generic error while running test",
                         "Incident 11114: Automated playbook ticket"
                     ]
                 },
@@ -1917,7 +1915,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -1987,14 +1985,14 @@
                     "data_path": "action_result.data.*.obj.FieldValues.Owner",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.obj.FieldValues.LastModBy",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -2143,7 +2141,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.ServiceOwnerEmail",
                     "data_type": "string",
                     "example_values": [
-                        "CMatthews@saasitdemo.com"
+                        "herman@phantom.us"
                     ],
                     "contains": [
                         "email"
@@ -2471,15 +2469,14 @@
                         "email"
                     ],
                     "example_values": [
-                        "JHerbert@saasitdemo.com",
-                        "jeff.kollmann@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.FieldValues.Owner",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -2568,7 +2565,7 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.FieldValues.Symptom",
                     "data_type": "string",
                     "example_values": [
-                        "boo da loo doop",
+                        "Browser windows are hanging",
                         "Created during an automated test"
                     ],
                     "column_name": "Description",
@@ -2590,7 +2587,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "ALong@saasitdemo.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -2622,7 +2619,7 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.FieldValues.CreatedBy",
                     "data_type": "string",
                     "example_values": [
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -2664,7 +2661,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "abcd@xyz.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -2853,7 +2850,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -3000,7 +2997,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -3229,7 +3226,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -3354,7 +3351,7 @@
                     "data_path": "action_result.data.*.objList.ArrayOfWebServiceBusinessObject.*.WebServiceBusinessObject.*.FieldValues.ServiceOwnerEmail",
                     "data_type": "string",
                     "example_values": [
-                        "CMatthews@saasitdemo.com"
+                        "herman@phantom.us"
                     ],
                     "contains": [
                         "email"
@@ -3589,7 +3586,7 @@
         {
             "action": "on poll",
             "identifier": "on_poll",
-            "description": "Callback action for the on_poll ingest functionality",
+            "description": "Ingest latest tickets from Ivanti ITSM",
             "verbose": "",
             "type": "ingest",
             "read_only": true,
@@ -3717,7 +3714,7 @@
                     "data_type": "string",
                     "example_values": [
                         "randy.jessee",
-                        "phanton.admin"
+                        "phantom.admin"
                     ],
                     "column_name": "Username",
                     "column_order": 0
@@ -3766,7 +3763,7 @@
                     "data_type": "string",
                     "example_values": [
                         "Randy",
-                        "Dev-Phanton"
+                        "Dev-Phantom"
                     ]
                 },
                 {
@@ -3784,7 +3781,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -3836,7 +3833,7 @@
                     "data_type": "string",
                     "example_values": [
                         "Randy Jessee",
-                        "Dev-Phanton Admin"
+                        "Dev-Phantom Admin"
                     ],
                     "column_name": "Full Name",
                     "column_order": 1
@@ -3885,8 +3882,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "randy.jessee@example.com",
-                        "abcd@xyz.com"
+                        "herman@phantom.us"
                     ],
                     "column_name": "Email",
                     "column_order": 2
@@ -3965,7 +3961,7 @@
                     ],
                     "example_values": [
                         "randy.jessee",
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -3996,7 +3992,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -4272,7 +4268,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "FErnst@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -4613,7 +4609,7 @@
                     "data_type": "string",
                     "example_values": [
                         "BEarle",
-                        "phanton.admin"
+                        "phantom.admin"
                     ]
                 },
                 {
@@ -4944,7 +4940,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -5039,7 +5035,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "randy.jessee@example.com"
+                        "herman@phantom.us"
                     ],
                     "column_name": "Email",
                     "column_order": 2
@@ -5145,7 +5141,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "change@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {
@@ -5418,7 +5414,7 @@
                         "email"
                     ],
                     "example_values": [
-                        "FErnst@example.com"
+                        "herman@phantom.us"
                     ]
                 },
                 {

@@ -64,7 +64,7 @@ class HeatConnector(BaseConnector):
         self._tenant = self._base_url.replace('/', '').replace('https:', '')
 
         self._proxy = {}
-        env_vars = config.get('_reserved_environment_variables')
+        env_vars = config.get('_reserved_environment_variables', {})
         if 'HTTP_PROXY' in env_vars:
             self._proxy['http'] = env_vars['HTTP_PROXY']['value']
         if 'HTTPS_PROXY' in env_vars:
