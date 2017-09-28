@@ -12,7 +12,7 @@
     "app_version": "1.0.10",
     "utctime_updated": "2017-09-28T00:41:57.000000Z",
     "package_name": "phantom_ivanti_itsm",
-    "main_module": "heat_connector.pyc",
+    "main_module": "ivantiitsm_connector.pyc",
     "min_phantom_version": "3.0.247",
     "app_wizard_version": "1.0.0",
     "pip_dependencies": {
@@ -1821,7 +1821,7 @@
                     "data_path": "action_result.data.*.obj.FieldValues.Symptom",
                     "data_type": "string",
                     "example_values": [
-                        "Please give me the thing",
+                        "Had to restart server multiple times",
                         "Created during an automated test"
                     ]
                 },
@@ -3586,7 +3586,7 @@
         {
             "action": "on poll",
             "identifier": "on_poll",
-            "description": "Ingest latest tickets from Ivanti ITSM",
+            "description": "Ingest latest tickets",
             "verbose": "",
             "type": "ingest",
             "read_only": true,
