@@ -1,4 +1,2 @@
-heat_connector.py
-heat_consts.py
-__init__.py
+*.py
 .git*

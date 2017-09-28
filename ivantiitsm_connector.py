@@ -1,5 +1,5 @@
 # --
-# File: heat_connector.py
+# File: ivantiitsm_connector.py
 #
 # Copyright (c) Phantom Cyber Corporation, 2017
 #
