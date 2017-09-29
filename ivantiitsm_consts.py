@@ -1,5 +1,5 @@
 # --
-# File: heat_consts.py
+# File: ivantiitsm_consts.py
 #
 # Copyright (c) Phantom Cyber Corporation, 2017
 #
