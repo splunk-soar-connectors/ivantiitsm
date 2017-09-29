@@ -18,7 +18,7 @@ from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 from phantom.vault import Vault
 
-import heat_consts as consts
+import ivantiitsm_consts as consts
 
 import json
 import base64
