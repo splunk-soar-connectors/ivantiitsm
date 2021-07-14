@@ -1,14 +1,10 @@
 # --
 # File: ivantiitsm_connector.py
 #
-# Copyright (c) Phantom Cyber Corporation, 2017-2018
+# Copyright (c) 2017-2021 Splunk Inc.
 #
-# This unpublished material is proprietary to Phantom Cyber.
-# All rights reserved. The methods and
-# techniques described herein are considered trade secrets
-# and/or confidential. Reproduction or distribution, in whole
-# or in part, is forbidden except by express written permission
-# of Phantom Cyber.
+# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
+# without a valid written license from Splunk Inc. is PROHIBITED.
 #
 # --
 
@@ -276,7 +272,7 @@ class HeatConnector(BaseConnector):
             artifact['source_data_identifier'] = ticket_id
 
             cef = {}
-            for k, v in ticket.iteritems():
+            for k, v in ticket.items():
                 if v is not None:
                     cef[k] = v
             artifact['cef'] = cef
@@ -330,7 +326,7 @@ class HeatConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
 
-            for k, v in query_dict.iteritems():
+            for k, v in query_dict.items():
 
                 rule_obj = self._client.factory.create('RuleClass')
                 rule_obj._Condition = "="
@@ -417,7 +413,7 @@ class HeatConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
 
-            for field, value in fields_dict.iteritems():
+            for field, value in fields_dict.items():
                 field_obj = self._client.factory.create('ObjectCommandDataFieldValue')
                 field_obj.Name = field
                 field_obj.Value = value
@@ -472,7 +468,7 @@ class HeatConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
 
             field_objs = []
-            for field, value in fields_dict.iteritems():
+            for field, value in fields_dict.items():
                 field_obj = self._client.factory.create('ObjectCommandDataFieldValue')
                 field_obj.Name = field
                 field_obj.Value = value
@@ -629,7 +625,7 @@ if __name__ == '__main__':
     # pudb.set_trace()
 
     if (len(sys.argv) < 2):
-        print "No test json specified as input"
+        print("No test json specified as input")
         exit(0)
 
     with open(sys.argv[1]) as f:
@@ -640,6 +636,6 @@ if __name__ == '__main__':
         connector = HeatConnector()
         connector.print_progress_message = True
         ret_val = connector._handle_action(json.dumps(in_json), None)
-        print (json.dumps(json.loads(ret_val), indent=4))
+        print(json.dumps(json.loads(ret_val), indent=4))
 
     exit(0)
