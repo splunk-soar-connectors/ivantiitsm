@@ -88,7 +88,7 @@
             "action": "create ticket",
             "identifier": "create_ticket",
             "description": "Create a new ticket",
-            "verbose": "Certain fields are required to create a ticket on Help Desk. Those fields are represented by the required parameters for this action.<br><br>The <b>customer</b> parameter takes a Customer Record ID, which can be found by running a <b>list users</b> or a <b>get user</b> action.<br><br>The <b>fields</b> parameter takes a JSON dictionary containing other fields and values that can be set during ticket creation. For example:<br><pre>{<br>    &quot;Impact&quot;: &quot;High&quot;<br>    &quot;Urgency&quot;: &quot;Medium&quot;<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.",
+            "verbose": "Certain fields are required to create a ticket on Help Desk. Those fields are represented by the required parameters for this action.<br><br>The <b>customer</b> parameter takes a Customer Record ID, which can be found by running a <b>list users</b> or a <b>get user</b> action.<br><br>The <b>fields</b> parameter takes a JSON dictionary containing other fields and values that can be set during ticket creation. For example:<br>{<br>    &quot;Impact&quot;: &quot;High&quot;<br>    &quot;Urgency&quot;: &quot;Medium&quot;<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.",
             "type": "generic",
             "read_only": false,
             "parameters": {
@@ -664,8 +664,8 @@
                     "data_path": "action_result.data.*.obj.FieldValues.LoginId",
                     "data_type": "string",
                     "example_values": [
-                        "KCho",
-                        "Jkollmann"
+                        "KSplunk",
+                        "UAdmin"
                     ]
                 },
                 {
@@ -1287,7 +1287,7 @@
             "action": "update ticket",
             "identifier": "update_ticket",
             "description": "Update a ticket",
-            "verbose": "The <b>fields</b> parameter takes a JSON dictionary containing fields and values that can be updated with this action. For example:<br><pre>{<br>    &quot;Impact&quot;: &quot;High&quot;<br>    &quot;Urgency&quot;: &quot;Medium&quot;<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.",
+            "verbose": "The <b>fields</b> parameter takes a JSON dictionary containing fields and values that can be updated with this action. For example:<br>{<br>    &quot;Impact&quot;: &quot;High&quot;<br>    &quot;Urgency&quot;: &quot;Medium&quot;<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.",
             "type": "generic",
             "read_only": false,
             "parameters": {
