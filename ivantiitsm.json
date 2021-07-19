@@ -16,7 +16,7 @@
     "main_module": "ivantiitsm_connector.py",
     "min_phantom_version": "4.9.39220",
     "latest_tested_versions": [
-        "Ivanti ITSM Cloud, 2005-2021 on July 15, 2021"
+        "Ivanti ITSM Cloud, 2005-2021 on July 19, 2021"
     ],
     "python_version": "3",
     "app_wizard_version": "1.0.0",
