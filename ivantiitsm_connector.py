@@ -326,6 +326,9 @@ class HeatConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
 
+            if not isinstance(query_dict, dict):
+                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
+
             for k, v in query_dict.items():
 
                 rule_obj = self._client.factory.create('RuleClass')
@@ -413,6 +416,9 @@ class HeatConnector(BaseConnector):
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
 
+            if not isinstance(fields_dict, dict):
+                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
+
             for field, value in fields_dict.items():
                 field_obj = self._client.factory.create('ObjectCommandDataFieldValue')
                 field_obj.Name = field
@@ -469,6 +475,9 @@ class HeatConnector(BaseConnector):
                 fields_dict = json.loads(fields)
             except Exception as e:
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
+
+            if not isinstance(fields_dict, dict):
+                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
 
             field_objs = []
             for field, value in fields_dict.items():
