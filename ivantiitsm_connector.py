@@ -13,6 +13,7 @@ import phantom.app as phantom
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
 from phantom.vault import Vault
+import phantom.rules as ph_rules
 
 import ivantiitsm_consts as consts
 
@@ -150,17 +151,17 @@ class HeatConnector(BaseConnector):
 
         # Check for file in vault
         try:
-            meta = Vault.get_file_info(vault_id)
-            if (not meta):
+            success, _, files_array = ph_rules.vault_info(vault_id=vault_id)
+            if (not success):
                 return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
         except:
             return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
 
-        meta = meta[0]
+        files_array = list(files_array)[0]
 
         # Attach file to ticket
         try:
-            path = Vault.get_file_path(vault_id)
+            path = files_array['path']
             with open(path, 'rb') as f:
                 f64 = base64.b64encode(f.read())
         except Exception as e:
@@ -168,9 +169,9 @@ class HeatConnector(BaseConnector):
 
         command_obj = self._client.factory.create('ObjectAttachmentCommandData')
         command_obj.ObjectType = "Incident#"
-        command_obj.fileName = meta['name']
+        command_obj.fileName = files_array['name']
         command_obj.ObjectId = ticket_id
-        command_obj.fileData = f64
+        command_obj.fileData = str(f64)
 
         ret_val, response = self._make_soap_call(action_result, 'AddAttachment', (self._session_key, self._tenant, command_obj,))
 
@@ -431,6 +432,9 @@ class HeatConnector(BaseConnector):
         if (phantom.is_fail(ret_val)):
             return ret_val
 
+        if response.get('status') == 'Error':
+            return action_result.set_status(phantom.APP_ERROR, "Could not create the ticket: {0}".format(response.get('exceptionReason')))
+
         ticket_id = response['recId']
         action_result.add_data(response)
         action_result.set_summary({"created_ticket_id": ticket_id})
@@ -486,6 +490,9 @@ class HeatConnector(BaseConnector):
 
             if (phantom.is_fail(ret_val)):
                 return ret_val
+
+            if response.get('status') == 'Error':
+                return action_result.set_status(phantom.APP_ERROR, "Could not update the ticket: {0}".format(response.get('exceptionReason')))
 
             if response:
                 action_result.add_data(response)
