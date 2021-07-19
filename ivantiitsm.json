@@ -3738,7 +3738,8 @@
                 "user": {
                     "description": "User login, email, or full name",
                     "data_type": "string",
-                    "required": true
+                    "required": true,
+                    "order": 0
                 }
             },
             "render": {
