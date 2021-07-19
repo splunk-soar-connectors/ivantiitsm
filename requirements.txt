@@ -1,2 +1,2 @@
-suds
+suds==0.4
 suds-py3==1.4.4.1
