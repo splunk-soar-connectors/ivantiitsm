@@ -152,7 +152,7 @@ class HeatConnector(BaseConnector):
         # Check for file in vault
         try:
             success, _, files_array = ph_rules.vault_info(vault_id=vault_id)
-            if (not success):
+            if not success:
                 return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
         except:
             return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
@@ -171,11 +171,11 @@ class HeatConnector(BaseConnector):
         command_obj.ObjectType = "Incident#"
         command_obj.fileName = files_array['name']
         command_obj.ObjectId = ticket_id
-        command_obj.fileData = str(f64)
+        command_obj.fileData = f64.decode('utf-8') 
 
         ret_val, response = self._make_soap_call(action_result, 'AddAttachment', (self._session_key, self._tenant, command_obj,))
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         return phantom.APP_SUCCESS
@@ -354,7 +354,7 @@ class HeatConnector(BaseConnector):
         # make soap call
         ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         if response:
@@ -429,7 +429,7 @@ class HeatConnector(BaseConnector):
 
         ret_val, response = self._make_soap_call(action_result, 'CreateObject', (self._session_key, self._tenant, command_obj,))
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         if response.get('status') == 'Error':
@@ -488,7 +488,7 @@ class HeatConnector(BaseConnector):
 
             ret_val, response = self._make_soap_call(action_result, 'UpdateObject', (self._session_key, self._tenant, command_obj,))
 
-            if (phantom.is_fail(ret_val)):
+            if phantom.is_fail(ret_val):
                 return ret_val
 
             if response.get('status') == 'Error':
@@ -551,7 +551,7 @@ class HeatConnector(BaseConnector):
 
         ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         if response:
@@ -586,7 +586,7 @@ class HeatConnector(BaseConnector):
 
         ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
 
-        if (phantom.is_fail(ret_val)):
+        if phantom.is_fail(ret_val):
             return ret_val
 
         if response:
@@ -631,7 +631,7 @@ if __name__ == '__main__':
     # import pudb
     # pudb.set_trace()
 
-    if (len(sys.argv) < 2):
+    if len(sys.argv) < 2:
         print("No test json specified as input")
         exit(0)
 
