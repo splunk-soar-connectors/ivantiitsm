@@ -12,7 +12,6 @@
 import phantom.app as phantom
 from phantom.base_connector import BaseConnector
 from phantom.action_result import ActionResult
-from phantom.vault import Vault
 import phantom.rules as ph_rules
 
 import ivantiitsm_consts as consts
@@ -171,7 +170,7 @@ class HeatConnector(BaseConnector):
         command_obj.ObjectType = "Incident#"
         command_obj.fileName = files_array['name']
         command_obj.ObjectId = ticket_id
-        command_obj.fileData = f64.decode('utf-8') 
+        command_obj.fileData = f64.decode('utf-8')
 
         ret_val, response = self._make_soap_call(action_result, 'AddAttachment', (self._session_key, self._tenant, command_obj,))
 
