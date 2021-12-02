@@ -15,19 +15,18 @@
 #
 #
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-import phantom.rules as ph_rules
-
-import ivantiitsm_consts as consts
-
-import json
 import base64
-from datetime import datetime
-from datetime import timedelta
+import json
+from datetime import datetime, timedelta
+
+import phantom.app as phantom
+import phantom.rules as ph_rules
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 from suds.client import Client
 from suds.sudsobject import asdict
+
+import ivantiitsm_consts as consts
 
 
 class RetVal(tuple):
@@ -644,6 +643,7 @@ class HeatConnector(BaseConnector):
 if __name__ == '__main__':
 
     import sys
+
     # import pudb
     # pudb.set_trace()
 
