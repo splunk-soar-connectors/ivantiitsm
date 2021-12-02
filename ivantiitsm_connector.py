@@ -571,7 +571,9 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
-        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', [{}])[0].get('WebServiceBusinessObject', [{}])[0].get('RecID', 'N/A')
+        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject',
+                                                  [{}])[0].get('WebServiceBusinessObject',
+                                                               [{}])[0].get('RecID', 'N/A')
         summary = action_result.update_summary({})
         summary['user_rec_id'] = user_id
 
