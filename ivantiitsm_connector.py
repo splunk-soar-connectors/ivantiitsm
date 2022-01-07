@@ -1,27 +1,32 @@
-# --
 # File: ivantiitsm_connector.py
 #
-# Copyright (c) 2017-2021 Splunk Inc.
+# Copyright (c) 2017-2022 Splunk Inc.
 #
-# SPLUNK CONFIDENTIAL - Use or disclosure of this material in whole or in part
-# without a valid written license from Splunk Inc. is PROHIBITED.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
-# --
-
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed under
+# the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+# either express or implied. See the License for the specific language governing permissions
+# and limitations under the License.
+#
+#
 # Phantom App imports
-import phantom.app as phantom
-from phantom.base_connector import BaseConnector
-from phantom.action_result import ActionResult
-import phantom.rules as ph_rules
-
-import ivantiitsm_consts as consts
-
-import json
 import base64
-from datetime import datetime
-from datetime import timedelta
+import json
+from datetime import datetime, timedelta
+
+import phantom.app as phantom
+import phantom.rules as ph_rules
+from phantom.action_result import ActionResult
+from phantom.base_connector import BaseConnector
 from suds.client import Client
 from suds.sudsobject import asdict
+
+import ivantiitsm_consts as consts
 
 
 class RetVal(tuple):
@@ -565,7 +570,9 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
-        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', [{}])[0].get('WebServiceBusinessObject', [{}])[0].get('RecID', 'N/A')
+        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject',
+                                                  [{}])[0].get('WebServiceBusinessObject',
+                                                               [{}])[0].get('RecID', 'N/A')
         summary = action_result.update_summary({})
         summary['user_rec_id'] = user_id
 
@@ -636,6 +643,7 @@ class HeatConnector(BaseConnector):
 if __name__ == '__main__':
 
     import sys
+
     # import pudb
     # pudb.set_trace()
 
