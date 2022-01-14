@@ -80,23 +80,19 @@ class HeatConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _connect(self, action_result):
-        self.debug_print('paul: _connect: %s' % action_result)
 
         try:
 
             if self._proxy:
-                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'), proxy=self._proxy)
+                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'),
+                                      proxy=self._proxy)
             else:
                 self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'))
 
-            self.debug_print('paul: _client: %s' % self._client)
-
-            ret_val, response = self._make_soap_call(action_result, 'Connect', (self._username, self._password, self._tenant, 'Admin'))
+            ret_val, response = self._make_soap_call(action_result, 'Connect',
+                                                     (self._username, self._password, self._tenant, 'Admin'))
             if not ret_val:
-                self.debug_print('paul: Failed _make_soap_call: response %s' % response)
                 return ret_val
-
-            self.debug_print('paul: DONE _make_soap_call: response %s' % response)
 
             self._session_key = response['sessionKey']
 
@@ -106,27 +102,21 @@ class HeatConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _make_soap_call(self, action_result, method, soap_args=()):
-        self.debug_print('paul: _make_soap_call: method %s, soap_args: %s' % (method, soap_args))
 
         if not hasattr(self._client.service, method):
-            self.debug_print('paul: _make_soap_call: gg1')
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not find given method {0}'.format(method)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not find given method {0}'.format(method)),
+                          None)
 
-        self.debug_print('paul: _make_soap_call: gg3')
         soap_call = getattr(self._client.service, method)
 
         try:
             response = soap_call(*soap_args)
         except Exception as e:
-            self.debug_print('paul: _make_soap_call: gg2')
             return RetVal(action_result.set_status(phantom.APP_ERROR, 'SOAP call to ITSM failed', e), None)
 
-        self.debug_print('paul: _make_soap_call: gg4')
         return True, self._suds_to_dict(response)
 
     def _suds_to_dict(self, sud_obj):
-        self.debug_print('paul: _suds_to_dict: %s' % sud_obj)
-
         if hasattr(sud_obj, '__keylist__'):
 
             sud_dict = asdict(sud_obj)
