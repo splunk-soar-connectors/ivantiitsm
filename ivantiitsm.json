@@ -14,7 +14,7 @@
     "utctime_updated": "2022-01-06T02:18:49.000000Z",
     "package_name": "phantom_ivanti_itsm",
     "main_module": "ivantiitsm_connector.py",
-    "min_phantom_version": "4.10.0.40961",
+    "min_phantom_version": "5.0.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Ivanti ITSM Cloud, 2005-2021 on July 19, 2021"

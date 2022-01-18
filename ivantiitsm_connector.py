@@ -84,11 +84,13 @@ class HeatConnector(BaseConnector):
         try:
 
             if self._proxy:
-                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'), proxy=self._proxy)
+                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'),
+                                      proxy=self._proxy)
             else:
                 self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'))
 
-            ret_val, response = self._make_soap_call(action_result, 'Connect', (self._username, self._password, self._tenant, 'Admin'))
+            ret_val, response = self._make_soap_call(action_result, 'Connect',
+                                                     (self._username, self._password, self._tenant, 'Admin'))
             if not ret_val:
                 return ret_val
 
@@ -102,7 +104,8 @@ class HeatConnector(BaseConnector):
     def _make_soap_call(self, action_result, method, soap_args=()):
 
         if not hasattr(self._client.service, method):
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not find given method {0}'.format(method)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not find given method {0}'.format(method)),
+                          None)
 
         soap_call = getattr(self._client.service, method)
 
@@ -114,7 +117,6 @@ class HeatConnector(BaseConnector):
         return True, self._suds_to_dict(response)
 
     def _suds_to_dict(self, sud_obj):
-
         if hasattr(sud_obj, '__keylist__'):
 
             sud_dict = asdict(sud_obj)
@@ -649,7 +651,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) < 2:
         print("No test json specified as input")
-        exit(0)
+        sys.exit(0)
 
     with open(sys.argv[1]) as f:
         in_json = f.read()
@@ -661,4 +663,4 @@ if __name__ == '__main__':
         ret_val = connector._handle_action(json.dumps(in_json), None)
         print(json.dumps(json.loads(ret_val), indent=4))
 
-    exit(0)
+    sys.exit(0)
