@@ -152,7 +152,7 @@ class HeatConnector(BaseConnector):
                 self.debug_print('paul: sud_obj: %s' % 4)
                 return None
         except:
-            self.debug_print('{0} is not NaN'.format(sud_obj))
+            self.debug_print('{} is not NaN'.format(sud_obj))
 
         return sud_obj
 
