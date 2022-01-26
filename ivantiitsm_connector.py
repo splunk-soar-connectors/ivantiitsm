@@ -17,6 +17,7 @@
 # Phantom App imports
 import base64
 import json
+import math
 from datetime import datetime, timedelta
 
 import phantom.app as phantom
@@ -146,8 +147,12 @@ class HeatConnector(BaseConnector):
             return sud_obj.strftime(consts.HEAT_TIME_FORMAT)
 
         # Checking for NaN
-        elif sud_obj != sud_obj:
-            return None
+        try:
+            if math.isnan(float(sud_obj)):
+                self.debug_print('paul: sud_obj: %s' % 4)
+                return None
+        except:
+            self.debug_print('{0} is not NaN'.format(sud_obj))
 
         return sud_obj
 
