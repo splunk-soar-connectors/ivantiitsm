@@ -150,7 +150,7 @@ class HeatConnector(BaseConnector):
         try:
             if math.isnan(float(sud_obj)):
                 return None
-        except:
+        except Exception:
             self.debug_print('{} is not a numeric value'.format(sud_obj))
 
         return sud_obj
