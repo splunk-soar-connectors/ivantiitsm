@@ -151,7 +151,7 @@ class HeatConnector(BaseConnector):
             if math.isnan(float(sud_obj)):
                 return None
         except:
-            self.debug_print('{} is not NaN'.format(sud_obj))
+            self.debug_print('{} is not a numeric value'.format(sud_obj))
 
         return sud_obj
 
