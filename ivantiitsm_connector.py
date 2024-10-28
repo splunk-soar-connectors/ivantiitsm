@@ -60,17 +60,17 @@ class HeatConnector(BaseConnector):
         config = self.get_config()
 
         # Access values in asset config by the name
-        self._username = config['username']
-        self._password = config['password']
-        self._base_url = config['url'] + ('' if config['url'].endswith('/') else '/')
-        self._tenant = self._base_url.replace('/', '').replace('https:', '')
+        self._username = config["username"]
+        self._password = config["password"]
+        self._base_url = config["url"] + ("" if config["url"].endswith("/") else "/")
+        self._tenant = self._base_url.replace("/", "").replace("https:", "")
 
         self._proxy = {}
-        env_vars = config.get('_reserved_environment_variables', {})
-        if 'HTTP_PROXY' in env_vars:
-            self._proxy['http'] = env_vars['HTTP_PROXY']['value']
-        if 'HTTPS_PROXY' in env_vars:
-            self._proxy['https'] = env_vars['HTTPS_PROXY']['value']
+        env_vars = config.get("_reserved_environment_variables", {})
+        if "HTTP_PROXY" in env_vars:
+            self._proxy["http"] = env_vars["HTTP_PROXY"]["value"]
+        if "HTTPS_PROXY" in env_vars:
+            self._proxy["https"] = env_vars["HTTPS_PROXY"]["value"]
 
         return phantom.APP_SUCCESS
 
@@ -85,51 +85,48 @@ class HeatConnector(BaseConnector):
         try:
 
             if self._proxy:
-                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'),
-                                      proxy=self._proxy)
+                self._client = Client(url="{0}{1}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"), proxy=self._proxy)
             else:
-                self._client = Client(url='{0}{1}'.format(self._base_url, 'ServiceAPI/FRSHEATIntegration.asmx?wsdl'))
+                self._client = Client(url="{0}{1}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"))
 
-            ret_val, response = self._make_soap_call(action_result, 'Connect',
-                                                     (self._username, self._password, self._tenant, 'Admin'))
+            ret_val, response = self._make_soap_call(action_result, "Connect", (self._username, self._password, self._tenant, "Admin"))
             if not ret_val:
                 return ret_val
 
-            self._session_key = response['sessionKey']
+            self._session_key = response["sessionKey"]
 
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, 'Could not connect to the ITSM API endpoint', e)
+            return action_result.set_status(phantom.APP_ERROR, "Could not connect to the ITSM API endpoint", e)
 
         return phantom.APP_SUCCESS
 
     def _make_soap_call(self, action_result, method, soap_args=()):
 
         if not hasattr(self._client.service, method):
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'Could not find given method {0}'.format(method)),
-                          None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "Could not find given method {0}".format(method)), None)
 
         soap_call = getattr(self._client.service, method)
 
         try:
             response = soap_call(*soap_args)
         except Exception as e:
-            return RetVal(action_result.set_status(phantom.APP_ERROR, 'SOAP call to ITSM failed', e), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, "SOAP call to ITSM failed", e), None)
 
         return True, self._suds_to_dict(response)
 
     def _suds_to_dict(self, sud_obj):
-        if hasattr(sud_obj, '__keylist__'):
+        if hasattr(sud_obj, "__keylist__"):
 
             sud_dict = asdict(sud_obj)
             new_dict = {}
 
-            if sud_dict.get('WebServiceFieldValue'):
-                for inner_sud_obj in sud_dict['WebServiceFieldValue']:
+            if sud_dict.get("WebServiceFieldValue"):
+                for inner_sud_obj in sud_dict["WebServiceFieldValue"]:
                     mini_dict = asdict(inner_sud_obj)
-                    value = mini_dict.get('Value')
+                    value = mini_dict.get("Value")
                     if isinstance(value, datetime):
                         value = value.strftime(consts.HEAT_TIME_FORMAT)
-                    new_dict[mini_dict['Name']] = value
+                    new_dict[mini_dict["Name"]] = value
                 return new_dict
 
             for key in sud_dict:
@@ -151,7 +148,7 @@ class HeatConnector(BaseConnector):
             if math.isnan(float(sud_obj)):
                 return None
         except Exception:
-            self.debug_print('{} is not a numeric value'.format(sud_obj))
+            self.debug_print("{} is not a numeric value".format(sud_obj))
 
         return sud_obj
 
@@ -171,19 +168,27 @@ class HeatConnector(BaseConnector):
 
         # Attach file to ticket
         try:
-            path = files_array['path']
-            with open(path, 'rb') as f:
+            path = files_array["path"]
+            with open(path, "rb") as f:
                 f64 = base64.b64encode(f.read())
         except Exception as e:
             return action_result.set_status(phantom.APP_ERROR, "Attach failed: Could not read vault file: {0}".format(str(e)))
 
-        command_obj = self._client.factory.create('ObjectAttachmentCommandData')
+        command_obj = self._client.factory.create("ObjectAttachmentCommandData")
         command_obj.ObjectType = "Incident#"
-        command_obj.fileName = files_array['name']
+        command_obj.fileName = files_array["name"]
         command_obj.ObjectId = ticket_id
-        command_obj.fileData = f64.decode('utf-8')
+        command_obj.fileData = f64.decode("utf-8")
 
-        ret_val, response = self._make_soap_call(action_result, 'AddAttachment', (self._session_key, self._tenant, command_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "AddAttachment",
+            (
+                self._session_key,
+                self._tenant,
+                command_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
@@ -218,58 +223,66 @@ class HeatConnector(BaseConnector):
             return ret_val
 
         if self.is_poll_now():
-            start_time = (datetime.utcnow() - timedelta(days=int(config['poll_now_ingestion_span']))).strftime(consts.HEAT_TIME_FORMAT)
-        elif self._state.get('first_run', True):
-            self._state['first_run'] = False
-            start_time = (datetime.utcnow() - timedelta(days=int(config['first_scheduled_ingestion_span']))).strftime(consts.HEAT_TIME_FORMAT)
-            self._state['last_time'] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+            start_time = (datetime.utcnow() - timedelta(days=int(config["poll_now_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
+        elif self._state.get("first_run", True):
+            self._state["first_run"] = False
+            start_time = (datetime.utcnow() - timedelta(days=int(config["first_scheduled_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
+            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
         else:
-            start_time = self._state['last_time']
-            self._state['last_time'] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+            start_time = self._state["last_time"]
+            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
 
-        from_date_obj = self._client.factory.create('RuleClass')
+        from_date_obj = self._client.factory.create("RuleClass")
         from_date_obj._Condition = ">"
         from_date_obj._Join = "AND"
         from_date_obj._Field = "CreatedDateTime"
         from_date_obj._Value = start_time
 
-        rule_arr = self._client.factory.create('ArrayOfRuleClass')
+        rule_arr = self._client.factory.create("ArrayOfRuleClass")
         rule_arr.Rule = [from_date_obj]
 
-        select_obj = self._client.factory.create('SelectClass')
+        select_obj = self._client.factory.create("SelectClass")
         select_obj._All = True
 
-        from_obj = self._client.factory.create('FromClass')
+        from_obj = self._client.factory.create("FromClass")
         from_obj._Object = "Incident"
 
-        query_obj = self._client.factory.create('ObjectQueryDefinition')
+        query_obj = self._client.factory.create("ObjectQueryDefinition")
         query_obj.From = from_obj
         query_obj.Where = rule_arr
         query_obj.Select = select_obj
 
-        ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "Search",
+            (
+                self._session_key,
+                self._tenant,
+                query_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
 
-        tickets = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', {})
+        tickets = response.get("objList", {}).get("ArrayOfWebServiceBusinessObject", {})
         if not tickets:
             return action_result.set_status(phantom.APP_SUCCESS, "No tickets to ingest")
 
         for ticket in tickets:
 
-            ticket = ticket.get('WebServiceBusinessObject', [{}])[0]
+            ticket = ticket.get("WebServiceBusinessObject", [{}])[0]
 
             if not ticket:
                 continue
 
-            ticket_id = ticket['RecID']
-            ticket = ticket['FieldValues']
+            ticket_id = ticket["RecID"]
+            ticket = ticket["FieldValues"]
 
             container = {}
-            container['name'] = ticket['Subject']
-            container['description'] = ticket['Symptom']
-            container['source_data_identifier'] = ticket_id
+            container["name"] = ticket["Subject"]
+            container["description"] = ticket["Symptom"]
+            container["source_data_identifier"] = ticket_id
 
             ret_val, message, container_id = self.save_container(container)
 
@@ -277,18 +290,24 @@ class HeatConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, message)
 
             artifact = {}
-            artifact['label'] = 'ticket'
-            artifact['name'] = 'Ticket Fields'
-            artifact['container_id'] = container_id
-            artifact['source_data_identifier'] = ticket_id
+            artifact["label"] = "ticket"
+            artifact["name"] = "Ticket Fields"
+            artifact["container_id"] = container_id
+            artifact["source_data_identifier"] = ticket_id
 
             cef = {}
             for k, v in ticket.items():
                 if v is not None:
                     cef[k] = v
-            artifact['cef'] = cef
-            artifact['cef_types'] = {'Email': ['email'], 'OwnershipAssignmentEmail': ['email'],
-                    'OwnerTeamEmail': ['email'], 'ServiceOwnerEmail': ['email'], 'TeamManagerEmail': ['email'], 'RecId': ['heat ticket id']}
+            artifact["cef"] = cef
+            artifact["cef_types"] = {
+                "Email": ["email"],
+                "OwnershipAssignmentEmail": ["email"],
+                "OwnerTeamEmail": ["email"],
+                "ServiceOwnerEmail": ["email"],
+                "TeamManagerEmail": ["email"],
+                "RecId": ["heat ticket id"],
+            }
 
             self.save_artifact(artifact)
 
@@ -305,9 +324,9 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        query_dict = param.get('query_dict')
-        from_date = param.get('from_date')
-        to_date = param.get('to_date')
+        query_dict = param.get("query_dict")
+        from_date = param.get("from_date")
+        to_date = param.get("to_date")
 
         if not (query_dict or from_date or to_date):
             return action_result.set_status(phantom.APP_ERROR, "Must include one of query_dict, from_date, or to_date parameters")
@@ -315,7 +334,7 @@ class HeatConnector(BaseConnector):
         rules = []
 
         if from_date:
-            from_date_obj = self._client.factory.create('RuleClass')
+            from_date_obj = self._client.factory.create("RuleClass")
             from_date_obj._Condition = ">"
             from_date_obj._Join = "AND"
             from_date_obj._Field = "CreatedDateTime"
@@ -323,7 +342,7 @@ class HeatConnector(BaseConnector):
             rules.append(from_date_obj)
 
         if to_date:
-            to_date_obj = self._client.factory.create('RuleClass')
+            to_date_obj = self._client.factory.create("RuleClass")
             to_date_obj._Condition = "<"
             to_date_obj._Join = "AND"
             to_date_obj._Field = "CreatedDateTime"
@@ -342,7 +361,7 @@ class HeatConnector(BaseConnector):
 
             for k, v in query_dict.items():
 
-                rule_obj = self._client.factory.create('RuleClass')
+                rule_obj = self._client.factory.create("RuleClass")
                 rule_obj._Condition = "="
                 rule_obj._Join = "AND"
                 rule_obj._Field = k
@@ -350,22 +369,30 @@ class HeatConnector(BaseConnector):
 
                 rules.append(rule_obj)
 
-        rule_arr = self._client.factory.create('ArrayOfRuleClass')
+        rule_arr = self._client.factory.create("ArrayOfRuleClass")
         rule_arr.Rule = rules
 
-        select_obj = self._client.factory.create('SelectClass')
+        select_obj = self._client.factory.create("SelectClass")
         select_obj._All = True
 
-        from_obj = self._client.factory.create('FromClass')
+        from_obj = self._client.factory.create("FromClass")
         from_obj._Object = "Incident"
 
-        query_obj = self._client.factory.create('ObjectQueryDefinition')
+        query_obj = self._client.factory.create("ObjectQueryDefinition")
         query_obj.From = from_obj
         query_obj.Where = rule_arr
         query_obj.Select = select_obj
 
         # make soap call
-        ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "Search",
+            (
+                self._session_key,
+                self._tenant,
+                query_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
@@ -373,9 +400,9 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
-        num_tickets = len(response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', []))
+        num_tickets = len(response.get("objList", {}).get("ArrayOfWebServiceBusinessObject", []))
         summary = action_result.update_summary({})
-        summary['num_tickets'] = num_tickets
+        summary["num_tickets"] = num_tickets
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -390,32 +417,32 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        subject = param['summary']
-        symptom = param['description']
-        service = param['service']
-        category = param['category']
-        customer = param['customer']
-        fields = param.get('fields')
-        attachment = param.get('attachment')
+        subject = param["summary"]
+        symptom = param["description"]
+        service = param["service"]
+        category = param["category"]
+        customer = param["customer"]
+        fields = param.get("fields")
+        attachment = param.get("attachment")
 
-        subject_obj = self._client.factory.create('ObjectCommandDataFieldValue')
-        subject_obj.Name = 'Subject'
+        subject_obj = self._client.factory.create("ObjectCommandDataFieldValue")
+        subject_obj.Name = "Subject"
         subject_obj.Value = subject
 
-        symptom_obj = self._client.factory.create('ObjectCommandDataFieldValue')
-        symptom_obj.Name = 'Symptom'
+        symptom_obj = self._client.factory.create("ObjectCommandDataFieldValue")
+        symptom_obj.Name = "Symptom"
         symptom_obj.Value = symptom
 
-        service_obj = self._client.factory.create('ObjectCommandDataFieldValue')
-        service_obj.Name = 'Service'
+        service_obj = self._client.factory.create("ObjectCommandDataFieldValue")
+        service_obj.Name = "Service"
         service_obj.Value = service
 
-        category_obj = self._client.factory.create('ObjectCommandDataFieldValue')
-        category_obj.Name = 'Category'
+        category_obj = self._client.factory.create("ObjectCommandDataFieldValue")
+        category_obj.Name = "Category"
         category_obj.Value = category
 
-        customer_obj = self._client.factory.create('ObjectCommandDataFieldValue')
-        customer_obj.Name = 'ProfileLink'
+        customer_obj = self._client.factory.create("ObjectCommandDataFieldValue")
+        customer_obj.Name = "ProfileLink"
         customer_obj.Value = customer
 
         field_objs = [subject_obj, symptom_obj, service_obj, category_obj, customer_obj]
@@ -431,27 +458,35 @@ class HeatConnector(BaseConnector):
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
 
             for field, value in fields_dict.items():
-                field_obj = self._client.factory.create('ObjectCommandDataFieldValue')
+                field_obj = self._client.factory.create("ObjectCommandDataFieldValue")
                 field_obj.Name = field
                 field_obj.Value = value
                 field_objs.append(field_obj)
 
-        field_arr_obj = self._client.factory.create('ArrayOfObjectCommandDataFieldValue')
+        field_arr_obj = self._client.factory.create("ArrayOfObjectCommandDataFieldValue")
         field_arr_obj.ObjectCommandDataFieldValue = field_objs
 
-        command_obj = self._client.factory.create('ObjectCommandData')
-        command_obj.ObjectType = 'Incident#'
+        command_obj = self._client.factory.create("ObjectCommandData")
+        command_obj.ObjectType = "Incident#"
         command_obj.Fields = field_arr_obj
 
-        ret_val, response = self._make_soap_call(action_result, 'CreateObject', (self._session_key, self._tenant, command_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "CreateObject",
+            (
+                self._session_key,
+                self._tenant,
+                command_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
 
-        if response.get('status') == 'Error':
-            return action_result.set_status(phantom.APP_ERROR, "Could not create the ticket: {0}".format(response.get('exceptionReason')))
+        if response.get("status") == "Error":
+            return action_result.set_status(phantom.APP_ERROR, "Could not create the ticket: {0}".format(response.get("exceptionReason")))
 
-        ticket_id = response['recId']
+        ticket_id = response["recId"]
         action_result.add_data(response)
         action_result.set_summary({"created_ticket_id": ticket_id})
 
@@ -473,9 +508,9 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        ticket_id = param['id']
-        fields = param.get('fields')
-        attachment = param.get('attachment')
+        ticket_id = param["id"]
+        fields = param.get("fields")
+        attachment = param.get("attachment")
 
         if not (fields or attachment):
             return action_result.set_status(phantom.APP_ERROR, "This action requires either the fields or attachment parameter")
@@ -492,26 +527,34 @@ class HeatConnector(BaseConnector):
 
             field_objs = []
             for field, value in fields_dict.items():
-                field_obj = self._client.factory.create('ObjectCommandDataFieldValue')
+                field_obj = self._client.factory.create("ObjectCommandDataFieldValue")
                 field_obj.Name = field
                 field_obj.Value = value
                 field_objs.append(field_obj)
 
-            field_arr_obj = self._client.factory.create('ArrayOfObjectCommandDataFieldValue')
+            field_arr_obj = self._client.factory.create("ArrayOfObjectCommandDataFieldValue")
             field_arr_obj.ObjectCommandDataFieldValue = field_objs
 
-            command_obj = self._client.factory.create('ObjectCommandData')
-            command_obj.ObjectType = 'Incident#'
+            command_obj = self._client.factory.create("ObjectCommandData")
+            command_obj.ObjectType = "Incident#"
             command_obj.Fields = field_arr_obj
             command_obj.ObjectId = ticket_id
 
-            ret_val, response = self._make_soap_call(action_result, 'UpdateObject', (self._session_key, self._tenant, command_obj,))
+            ret_val, response = self._make_soap_call(
+                action_result,
+                "UpdateObject",
+                (
+                    self._session_key,
+                    self._tenant,
+                    command_obj,
+                ),
+            )
 
             if phantom.is_fail(ret_val):
                 return ret_val
 
-            if response.get('status') == 'Error':
-                return action_result.set_status(phantom.APP_ERROR, "Could not update the ticket: {0}".format(response.get('exceptionReason')))
+            if response.get("status") == "Error":
+                return action_result.set_status(phantom.APP_ERROR, "Could not update the ticket: {0}".format(response.get("exceptionReason")))
 
             if response:
                 action_result.add_data(response)
@@ -534,41 +577,49 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        user = param['user']
+        user = param["user"]
 
-        full_obj = self._client.factory.create('RuleClass')
+        full_obj = self._client.factory.create("RuleClass")
         full_obj._Condition = "="
         full_obj._Join = "OR"
         full_obj._Field = "DisplayName"
         full_obj._Value = user
 
-        login_obj = self._client.factory.create('RuleClass')
+        login_obj = self._client.factory.create("RuleClass")
         login_obj._Condition = "="
         login_obj._Join = "OR"
         login_obj._Field = "LoginID"
         login_obj._Value = user
 
-        email_obj = self._client.factory.create('RuleClass')
+        email_obj = self._client.factory.create("RuleClass")
         email_obj._Condition = "="
         email_obj._Join = "OR"
         email_obj._Field = "PrimaryEmail"
         email_obj._Value = user
 
-        rule_arr = self._client.factory.create('ArrayOfRuleClass')
+        rule_arr = self._client.factory.create("ArrayOfRuleClass")
         rule_arr.Rule = [full_obj, login_obj, email_obj]
 
-        select_obj = self._client.factory.create('SelectClass')
+        select_obj = self._client.factory.create("SelectClass")
         select_obj._All = True
 
-        from_obj = self._client.factory.create('FromClass')
+        from_obj = self._client.factory.create("FromClass")
         from_obj._Object = "Employee"
 
-        query_obj = self._client.factory.create('ObjectQueryDefinition')
+        query_obj = self._client.factory.create("ObjectQueryDefinition")
         query_obj.From = from_obj
         query_obj.Where = rule_arr
         query_obj.Select = select_obj
 
-        ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "Search",
+            (
+                self._session_key,
+                self._tenant,
+                query_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
@@ -576,11 +627,14 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
-        user_id = response.get('objList', {}).get('ArrayOfWebServiceBusinessObject',
-                                                  [{}])[0].get('WebServiceBusinessObject',
-                                                               [{}])[0].get('RecID', 'N/A')
+        user_id = (
+            response.get("objList", {})
+            .get("ArrayOfWebServiceBusinessObject", [{}])[0]
+            .get("WebServiceBusinessObject", [{}])[0]
+            .get("RecID", "N/A")
+        )
         summary = action_result.update_summary({})
-        summary['user_rec_id'] = user_id
+        summary["user_rec_id"] = user_id
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -595,17 +649,25 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
-        select_obj = self._client.factory.create('SelectClass')
+        select_obj = self._client.factory.create("SelectClass")
         select_obj._All = True
 
-        from_obj = self._client.factory.create('FromClass')
+        from_obj = self._client.factory.create("FromClass")
         from_obj._Object = "Employee"
 
-        query_obj = self._client.factory.create('ObjectQueryDefinition')
+        query_obj = self._client.factory.create("ObjectQueryDefinition")
         query_obj.From = from_obj
         query_obj.Select = select_obj
 
-        ret_val, response = self._make_soap_call(action_result, 'Search', (self._session_key, self._tenant, query_obj,))
+        ret_val, response = self._make_soap_call(
+            action_result,
+            "Search",
+            (
+                self._session_key,
+                self._tenant,
+                query_obj,
+            ),
+        )
 
         if phantom.is_fail(ret_val):
             return ret_val
@@ -613,9 +675,9 @@ class HeatConnector(BaseConnector):
         if response:
             action_result.add_data(response)
 
-        num_users = len(response.get('objList', {}).get('ArrayOfWebServiceBusinessObject', []))
+        num_users = len(response.get("objList", {}).get("ArrayOfWebServiceBusinessObject", []))
         summary = action_result.update_summary({})
-        summary['num_users'] = num_users
+        summary["num_users"] = num_users
 
         return action_result.set_status(phantom.APP_SUCCESS)
 
@@ -628,25 +690,25 @@ class HeatConnector(BaseConnector):
 
         self.debug_print("action_id", self.get_action_identifier())
 
-        if action_id == 'test_connectivity':
+        if action_id == "test_connectivity":
             ret_val = self._handle_test_connectivity(param)
-        elif action_id == 'on_poll':
+        elif action_id == "on_poll":
             ret_val = self._handle_on_poll(param)
-        elif action_id == 'run_query':
+        elif action_id == "run_query":
             ret_val = self._handle_run_query(param)
-        elif action_id == 'create_ticket':
+        elif action_id == "create_ticket":
             ret_val = self._handle_create_ticket(param)
-        elif action_id == 'update_ticket':
+        elif action_id == "update_ticket":
             ret_val = self._handle_update_ticket(param)
-        elif action_id == 'get_user':
+        elif action_id == "get_user":
             ret_val = self._handle_get_user(param)
-        elif action_id == 'list_users':
+        elif action_id == "list_users":
             ret_val = self._handle_list_users(param)
 
         return ret_val
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     import sys
 
