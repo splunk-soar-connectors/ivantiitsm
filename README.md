@@ -6,7 +6,7 @@ Connector Version: 3.0.0
 Product Vendor: Ivanti  
 Product Name: ITSM  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 5.0.0  
+Minimum Product Version: 6.2.2  
 
 This app integrates with Ivanti ITSM to provide ingestion and several ticketing actions
 
