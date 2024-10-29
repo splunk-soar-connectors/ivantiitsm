@@ -198,6 +198,7 @@ class HeatConnector(BaseConnector):
     def _handle_test_connectivity(self, param):
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
+        self.debug_pring("Running test connectivity")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         ret_val = self._connect(action_result)
@@ -310,7 +311,7 @@ class HeatConnector(BaseConnector):
             }
 
             self.save_artifact(artifact)
-
+        self.debug_print("on poll action succeeded.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_run_query(self, param):
