@@ -198,7 +198,7 @@ class HeatConnector(BaseConnector):
     def _handle_test_connectivity(self, param):
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
-        self.debug_pring("Running test connectivity")
+        self.debug_print("Running test connectivity")
         action_result = self.add_action_result(ActionResult(dict(param)))
 
         ret_val = self._connect(action_result)
