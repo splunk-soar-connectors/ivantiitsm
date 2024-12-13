@@ -9,31 +9,23 @@
     "product_name": "ITSM",
     "product_version_regex": ".*",
     "publisher": "Splunk Community",
-    "license": "Copyright (c) 2017-2022 Splunk Inc.",
-    "app_version": "3.0.0",
-    "utctime_updated": "2022-01-18T22:40:10.000000Z",
+    "license": "Copyright (c) 2017-2024 Splunk Inc.",
+    "app_version": "3.0.1",
+    "utctime_updated": "2024-12-13T22:11:24.000000Z",
     "package_name": "phantom_ivanti_itsm",
     "main_module": "ivantiitsm_connector.py",
-    "min_phantom_version": "6.2.2",
+    "min_phantom_version": "6.3.0",
     "fips_compliant": true,
     "latest_tested_versions": [
         "Ivanti ITSM Cloud, 2005-2021 on July 19, 2021"
     ],
     "python_version": "3",
     "app_wizard_version": "1.0.0",
-    "pip_dependencies": {
-        "wheel": [
-            {
-                "module": "suds",
-                "input_file": "wheels/suds-0.4-cp27-none-any.whl"
-            }
-        ]
-    },
     "pip3_dependencies": {
         "wheel": [
             {
-                "module": "suds",
-                "input_file": "wheels/suds_py3-1.4.4.1-py3-none-any.whl"
+                "module": "suds_py3",
+                "input_file": "wheels/py3/suds_py3-1.4.4.1-py3-none-any.whl"
             }
         ]
     },

@@ -2,16 +2,16 @@
 # Ivanti ITSM
 
 Publisher: Splunk Community  
-Connector Version: 3.0.0  
+Connector Version: 3.0.1  
 Product Vendor: Ivanti  
 Product Name: ITSM  
 Product Version Supported (regex): ".\*"  
-Minimum Product Version: 6.2.2  
+Minimum Product Version: 6.3.0  
 
 This app integrates with Ivanti ITSM to provide ingestion and several ticketing actions
 
-### Configuration Variables
-The below configuration variables are required for this Connector to operate.  These variables are specified when configuring a ITSM asset in SOAR.
+### Configuration variables
+This table lists the configuration variables required to operate Ivanti ITSM. These variables are specified when configuring a ITSM asset in Splunk SOAR.
 
 VARIABLE | REQUIRED | TYPE | DESCRIPTION
 -------- | -------- | ---- | -----------
