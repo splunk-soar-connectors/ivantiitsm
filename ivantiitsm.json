@@ -8,9 +8,9 @@
     "logo_dark": "logo_ivanti_dark.svg",
     "product_name": "ITSM",
     "product_version_regex": ".*",
-    "publisher": "Splunk Community",
+    "publisher": "Splunk",
     "license": "Copyright (c) 2017-2024 Splunk Inc.",
-    "app_version": "3.0.1",
+    "app_version": "3.0.2",
     "utctime_updated": "2024-12-13T22:11:24.000000Z",
     "package_name": "phantom_ivanti_itsm",
     "main_module": "ivantiitsm_connector.py",
@@ -904,8 +904,8 @@
                         "ivanti ticket id"
                     ],
                     "example_values": [
-                        "C19CB4544F6B4D6580F3DE802CCD5B0C",
-                        "22F2496809F64204942D64E734F23441"
+                        "TESTB4544F6B4D6580F3DE802CCDTEST",
+                        "TEST496809F64204942D64E734F2TEST"
                     ],
                     "column_name": "Incident ID",
                     "column_order": 1
@@ -1211,7 +1211,7 @@
                     ],
                     "example_values": [
                         "C19CB4544F6B4D6580F3DE802CCD5B0C",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -1229,7 +1229,7 @@
                     ],
                     "example_values": [
                         "C19CB4544F6B4D6580F3DE802CCD5B0C",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -1244,7 +1244,7 @@
                     "data_type": "string",
                     "example_values": [
                         "C19CB4544F6B4D6580F3DE802CCD5B0C",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ],
                     "contains": [
                         "md5"
@@ -1254,7 +1254,7 @@
                     "data_path": "action_result.message",
                     "data_type": "string",
                     "example_values": [
-                        "Created ticket id: 22F2496809F64204942D64E734F23441"
+                        "Created ticket id: TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -1345,7 +1345,7 @@
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -2056,7 +2056,7 @@
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -2413,7 +2413,7 @@
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -2431,7 +2431,7 @@
                     ],
                     "example_values": [
                         "6AB67785E4A547C4A6E5F024E703468D",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -2514,7 +2514,7 @@
                     "data_type": "string",
                     "example_values": [
                         "{\"Impact\": \"High\"}",
-                        "{\"RecId\": \"22F2496809F64204942D64E734F23441\"}"
+                        "{\"RecId\": \"TEST496809F64204942D64E734F2TEST\"}"
                     ]
                 },
                 {
@@ -3251,7 +3251,7 @@
                     ],
                     "example_values": [
                         "130C8962527F439E8B543C64D9AD65F5",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
@@ -3638,7 +3638,7 @@
                     ],
                     "example_values": [
                         "130C8962527F439E8B543C64D9AD65F5",
-                        "22F2496809F64204942D64E734F23441"
+                        "TEST496809F64204942D64E734F2TEST"
                     ]
                 },
                 {
