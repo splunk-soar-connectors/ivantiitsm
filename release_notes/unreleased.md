@@ -1,2 +1,2 @@
 **Unreleased**
-* certify and release as Splunk Community App [PAPP-35222]
+* Re-certify release as Splunk Supported App [PAPP-35222]
