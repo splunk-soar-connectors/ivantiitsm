@@ -2,7 +2,7 @@
 # Ivanti ITSM
 
 Publisher: Splunk  
-Connector Version: 3.0.2  
+Connector Version: 3.0.3  
 Product Vendor: Ivanti  
 Product Name: ITSM  
 Product Version Supported (regex): ".\*"  
