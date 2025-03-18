@@ -36,11 +36,9 @@ class RetVal(tuple):
 
 
 class HeatConnector(BaseConnector):
-
     def __init__(self):
-
         # Call the BaseConnectors init first
-        super(HeatConnector, self).__init__()
+        super().__init__()
 
         self._state = None
         self._proxy = None
@@ -51,7 +49,6 @@ class HeatConnector(BaseConnector):
         self._session_key = None
 
     def initialize(self):
-
         # Load the state in initialize, use it to store data
         # that needs to be accessed across actions
         self._state = self.load_state()
@@ -75,19 +72,16 @@ class HeatConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def finalize(self):
-
         # Save the state, this data is saved accross actions and app upgrades
         self.save_state(self._state)
         return phantom.APP_SUCCESS
 
     def _connect(self, action_result):
-
         try:
-
             if self._proxy:
-                self._client = Client(url="{0}{1}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"), proxy=self._proxy)
+                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"), proxy=self._proxy)
             else:
-                self._client = Client(url="{0}{1}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"))
+                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"))
 
             ret_val, response = self._make_soap_call(action_result, "Connect", (self._username, self._password, self._tenant, "Admin"))
             if not ret_val:
@@ -101,9 +95,8 @@ class HeatConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _make_soap_call(self, action_result, method, soap_args=()):
-
         if not hasattr(self._client.service, method):
-            return RetVal(action_result.set_status(phantom.APP_ERROR, "Could not find given method {0}".format(method)), None)
+            return RetVal(action_result.set_status(phantom.APP_ERROR, f"Could not find given method {method}"), None)
 
         soap_call = getattr(self._client.service, method)
 
@@ -116,7 +109,6 @@ class HeatConnector(BaseConnector):
 
     def _suds_to_dict(self, sud_obj):
         if hasattr(sud_obj, "__keylist__"):
-
             sud_dict = asdict(sud_obj)
             new_dict = {}
 
@@ -148,23 +140,22 @@ class HeatConnector(BaseConnector):
             if math.isnan(float(sud_obj)):
                 return None
         except Exception:
-            self.debug_print("{} is not a numeric value".format(sud_obj))
+            self.debug_print(f"{sud_obj} is not a numeric value")
 
         return sud_obj
 
     def _add_attachment(self, action_result, ticket_id, vault_id):
-
         self.save_progress("Adding attachment to ticket")
 
         # Check for file in vault
         try:
             success, _, files_array = ph_rules.vault_info(vault_id=vault_id)
             if not success:
-                return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
+                return action_result.set_status(phantom.APP_ERROR, f"Attach failed: {consts.HEAT_ERROR_FILE_NOT_IN_VAULT}")
         except:
-            return action_result.set_status(phantom.APP_ERROR, "Attach failed: {0}".format(consts.HEAT_ERROR_FILE_NOT_IN_VAULT))
+            return action_result.set_status(phantom.APP_ERROR, f"Attach failed: {consts.HEAT_ERROR_FILE_NOT_IN_VAULT}")
 
-        files_array = list(files_array)[0]
+        files_array = next(iter(files_array))
 
         # Attach file to ticket
         try:
@@ -172,7 +163,7 @@ class HeatConnector(BaseConnector):
             with open(path, "rb") as f:
                 f64 = base64.b64encode(f.read())
         except Exception as e:
-            return action_result.set_status(phantom.APP_ERROR, "Attach failed: Could not read vault file: {0}".format(str(e)))
+            return action_result.set_status(phantom.APP_ERROR, f"Attach failed: Could not read vault file: {e!s}")
 
         command_obj = self._client.factory.create("ObjectAttachmentCommandData")
         command_obj.ObjectType = "Incident#"
@@ -196,7 +187,6 @@ class HeatConnector(BaseConnector):
         return phantom.APP_SUCCESS
 
     def _handle_test_connectivity(self, param):
-
         # Add an action result object to self (BaseConnector) to represent the action for this param
         self.debug_print("Running test connectivity")
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -210,9 +200,8 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_on_poll(self, param):
-
         # use self.save_progress(...) to send progress messages back to the platform
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
 
         # Add an action result object to self (BaseConnector) to represent the action for this param
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -271,7 +260,6 @@ class HeatConnector(BaseConnector):
             return action_result.set_status(phantom.APP_SUCCESS, "No tickets to ingest")
 
         for ticket in tickets:
-
             ticket = ticket.get("WebServiceBusinessObject", [{}])[0]
 
             if not ticket:
@@ -315,8 +303,7 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_run_query(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         self.debug_print(param)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -351,17 +338,15 @@ class HeatConnector(BaseConnector):
             rules.append(to_date_obj)
 
         if query_dict:
-
             try:
                 query_dict = json.loads(query_dict)
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
+                return action_result.set_status(phantom.APP_ERROR, f"Could not parse JSON from query_dict parameter: {e}")
 
             if not isinstance(query_dict, dict):
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
 
             for k, v in query_dict.items():
-
                 rule_obj = self._client.factory.create("RuleClass")
                 rule_obj._Condition = "="
                 rule_obj._Join = "AND"
@@ -408,8 +393,7 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_create_ticket(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         self.debug_print(param)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -449,11 +433,10 @@ class HeatConnector(BaseConnector):
         field_objs = [subject_obj, symptom_obj, service_obj, category_obj, customer_obj]
 
         if fields:
-
             try:
                 fields_dict = json.loads(fields)
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
+                return action_result.set_status(phantom.APP_ERROR, f"Could not parse JSON from query_dict parameter: {e}")
 
             if not isinstance(fields_dict, dict):
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
@@ -485,7 +468,7 @@ class HeatConnector(BaseConnector):
             return ret_val
 
         if response.get("status") == "Error":
-            return action_result.set_status(phantom.APP_ERROR, "Could not create the ticket: {0}".format(response.get("exceptionReason")))
+            return action_result.set_status(phantom.APP_ERROR, "Could not create the ticket: {}".format(response.get("exceptionReason")))
 
         ticket_id = response["recId"]
         action_result.add_data(response)
@@ -499,8 +482,7 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_update_ticket(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         self.debug_print(param)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -517,11 +499,10 @@ class HeatConnector(BaseConnector):
             return action_result.set_status(phantom.APP_ERROR, "This action requires either the fields or attachment parameter")
 
         if fields:
-
             try:
                 fields_dict = json.loads(fields)
             except Exception as e:
-                return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter: {0}".format(e))
+                return action_result.set_status(phantom.APP_ERROR, f"Could not parse JSON from query_dict parameter: {e}")
 
             if not isinstance(fields_dict, dict):
                 return action_result.set_status(phantom.APP_ERROR, "Could not parse JSON from query_dict parameter")
@@ -555,7 +536,7 @@ class HeatConnector(BaseConnector):
                 return ret_val
 
             if response.get("status") == "Error":
-                return action_result.set_status(phantom.APP_ERROR, "Could not update the ticket: {0}".format(response.get("exceptionReason")))
+                return action_result.set_status(phantom.APP_ERROR, "Could not update the ticket: {}".format(response.get("exceptionReason")))
 
             if response:
                 action_result.add_data(response)
@@ -568,8 +549,7 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS, "Ticket successfully updated")
 
     def _handle_get_user(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         self.debug_print(param)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -640,8 +620,7 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def _handle_list_users(self, param):
-
-        self.save_progress("In action handler for: {0}".format(self.get_action_identifier()))
+        self.save_progress(f"In action handler for: {self.get_action_identifier()}")
         self.debug_print(param)
 
         action_result = self.add_action_result(ActionResult(dict(param)))
@@ -683,7 +662,6 @@ class HeatConnector(BaseConnector):
         return action_result.set_status(phantom.APP_SUCCESS)
 
     def handle_action(self, param):
-
         ret_val = phantom.APP_SUCCESS
 
         # Get the action that we are supposed to execute for this App Run
@@ -710,7 +688,6 @@ class HeatConnector(BaseConnector):
 
 
 if __name__ == "__main__":
-
     import sys
 
     # import pudb
