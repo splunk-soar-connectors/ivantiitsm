@@ -1,9 +1,9 @@
 Splunk SOAR Ivanti ITSM
-Copyright (c) 2017-2022 Splunk Inc.
+Copyright (c) 2017-2025 Splunk Inc.
 
-Third-party Software Attributions:
+Third Party Software Attributions:
 
-Library: suds-py3
+Name: suds-py3
 Version: 1.4.4.1
-License: LGPL 3.0
-Unknown copyright
+Author: Cackharot (original Jeff Ortel)
+License: LGPL
