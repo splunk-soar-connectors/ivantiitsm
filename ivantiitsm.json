@@ -21,14 +21,6 @@
     ],
     "python_version": "3",
     "app_wizard_version": "1.0.0",
-    "pip3_dependencies": {
-        "wheel": [
-            {
-                "module": "suds_py3",
-                "input_file": "wheels/py3/suds_py3-1.4.4.1-py3-none-any.whl"
-            }
-        ]
-    },
     "configuration": {
         "url": {
             "description": "Server URL",
@@ -6219,5 +6211,13 @@
             ],
             "versions": "EQ(*)"
         }
-    ]
+    ],
+    "pip39_dependencies": {
+        "wheel": [
+            {
+                "module": "suds_py3",
+                "input_file": "wheels/py3/suds_py3-1.4.4.1-py3-none-any.whl"
+            }
+        ]
+    }
 }
