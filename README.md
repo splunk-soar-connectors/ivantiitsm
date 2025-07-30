@@ -1,7 +1,7 @@
 # Ivanti ITSM
 
 Publisher: Splunk \
-Connector Version: 3.0.4 \
+Connector Version: 3.0.5 \
 Product Vendor: Ivanti \
 Product Name: ITSM \
 Minimum Product Version: 6.3.0

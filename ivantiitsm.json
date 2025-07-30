@@ -10,8 +10,8 @@
     "product_version_regex": ".*",
     "publisher": "Splunk",
     "license": "Copyright (c) 2017-2025 Splunk Inc.",
-    "app_version": "3.0.4",
-    "utctime_updated": "2025-04-14T21:03:25.583923Z",
+    "app_version": "3.0.5",
+    "utctime_updated": "2025-07-30T17:47:39.552835Z",
     "package_name": "phantom_ivanti_itsm",
     "main_module": "ivantiitsm_connector.py",
     "min_phantom_version": "6.3.0",
@@ -19,7 +19,10 @@
     "latest_tested_versions": [
         "Ivanti ITSM Cloud, 2005-2021 on Jan 3, 2025"
     ],
-    "python_version": ["3.9", "3.13"],
+    "python_version": [
+        "3.9",
+        "3.13"
+    ],
     "app_wizard_version": "1.0.0",
     "configuration": {
         "url": {
