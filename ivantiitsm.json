@@ -6222,5 +6222,13 @@
                 "input_file": "wheels/py3/suds_py3-1.4.4.1-py3-none-any.whl"
             }
         ]
+    },
+    "pip313_dependencies": {
+        "wheel": [
+            {
+                "module": "suds_py3",
+                "input_file": "wheels/py3/suds_py3-1.4.4.1-py3-none-any.whl"
+            }
+        ]
     }
 }
