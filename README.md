@@ -1,9 +1,9 @@
 # Ivanti ITSM
 
-Publisher: Splunk \
-Connector Version: 3.0.5 \
-Product Vendor: Ivanti \
-Product Name: ITSM \
+Publisher: Splunk <br>
+Connector Version: 3.0.5 <br>
+Product Vendor: Ivanti <br>
+Product Name: ITSM <br>
 Minimum Product Version: 6.3.0
 
 This app integrates with Ivanti ITSM to provide ingestion and several ticketing actions
@@ -22,19 +22,19 @@ VARIABLE | REQUIRED | TYPE | DESCRIPTION
 
 ### Supported Actions
 
-[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration \
-[create ticket](#action-create-ticket) - Create a new ticket \
-[update ticket](#action-update-ticket) - Update a ticket \
-[run query](#action-run-query) - Search for a text in resources \
-[on poll](#action-on-poll) - Ingest latest tickets \
-[get user](#action-get-user) - Get information about a user \
+[test connectivity](#action-test-connectivity) - Validate the asset configuration for connectivity using supplied configuration <br>
+[create ticket](#action-create-ticket) - Create a new ticket <br>
+[update ticket](#action-update-ticket) - Update a ticket <br>
+[run query](#action-run-query) - Search for a text in resources <br>
+[on poll](#action-on-poll) - Ingest latest tickets <br>
+[get user](#action-get-user) - Get information about a user <br>
 [list users](#action-list-users) - List all users on system
 
 ## action: 'test connectivity'
 
 Validate the asset configuration for connectivity using supplied configuration
 
-Type: **test** \
+Type: **test** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -49,7 +49,7 @@ No Output
 
 Create a new ticket
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 Certain fields are required to create a ticket on Help Desk. Those fields are represented by the required parameters for this action.<br><br>The <b>customer</b> parameter takes a Customer Record ID, which can be found by running a <b>list users</b> or a <b>get user</b> action.<br><br>The <b>fields</b> parameter takes a JSON dictionary containing other fields and values that can be set during ticket creation. For example:<br>{<br> "Impact": "High"<br> "Urgency": "Medium"<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.
@@ -250,7 +250,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Update a ticket
 
-Type: **generic** \
+Type: **generic** <br>
 Read only: **False**
 
 The <b>fields</b> parameter takes a JSON dictionary containing fields and values that can be updated with this action. For example:<br>{<br> "Impact": "High"<br> "Urgency": "Medium"<br>}</pre><br><br>The <b>attachment</b> parameter takes a vault ID.
@@ -444,7 +444,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Search for a text in resources
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 The <b>query_dict</b> parameter takes a JSON dictionary with each key representing a field in an event to query. See the <b>LogQueryFilterTypeEnum</b> section of the <b>LogRhythm® SOAP API Reference Guide</b> for a list of event fields that can be queried.<br><br>This action requires one of the parameters to run.
@@ -636,7 +636,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 Ingest latest tickets
 
-Type: **ingest** \
+Type: **ingest** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -657,7 +657,7 @@ No Output
 
 Get information about a user
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
@@ -865,7 +865,7 @@ summary.total_objects_successful | numeric | | 1 |
 
 List all users on system
 
-Type: **investigate** \
+Type: **investigate** <br>
 Read only: **True**
 
 #### Action Parameters
