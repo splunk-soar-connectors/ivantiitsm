@@ -19,7 +19,7 @@
     "latest_tested_versions": [
         "Ivanti ITSM Cloud, 2005-2021 on Jan 3, 2025"
     ],
-    "python_version": "3.9, 3.13",
+    "python_version": "3.9",
     "app_wizard_version": "1.0.0",
     "configuration": {
         "url": {
