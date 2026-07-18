@@ -25,9 +25,51 @@ import phantom.rules as ph_rules
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from suds.client import Client
+from suds.plugin import DocumentPlugin, MessagePlugin
 from suds.sudsobject import asdict
+from suds.transport.http import HttpAuthenticated
 
 import ivantiitsm_consts as consts
+
+MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
+UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
+
+
+class _LimitedResponse:
+    def __init__(self, response):
+        self._response = response
+
+    def __getattr__(self, name):
+        return getattr(self._response, name)
+
+    def read(self, size=None):
+        read_size = MAX_XML_RESPONSE_BYTES + 1 if size is None else min(size, MAX_XML_RESPONSE_BYTES + 1)
+        content = self._response.read(read_size)
+        if len(content) > MAX_XML_RESPONSE_BYTES:
+            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
+        return content
+
+
+class _LimitedHttpTransport(HttpAuthenticated):
+    def u2open(self, request):
+        return _LimitedResponse(super().u2open(request))
+
+
+class _RejectUnsafeXmlPlugin(DocumentPlugin, MessagePlugin):
+    @staticmethod
+    def _validate(payload):
+        content = payload.encode("utf-8") if isinstance(payload, str) else bytes(payload)
+        if len(content) > MAX_XML_RESPONSE_BYTES:
+            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
+        upper_content = content.upper()
+        if any(marker in upper_content for marker in UNSAFE_XML_MARKERS):
+            raise ValueError("Ivanti ITSM XML response contains a prohibited DTD or entity declaration")
+
+    def loaded(self, context):
+        self._validate(context.document)
+
+    def received(self, context):
+        self._validate(context.reply)
 
 
 class RetVal(tuple):
@@ -78,10 +120,16 @@ class HeatConnector(BaseConnector):
 
     def _connect(self, action_result):
         try:
+            client_options = {
+                "plugins": [_RejectUnsafeXmlPlugin()],
+                "transport": _LimitedHttpTransport(),
+            }
             if self._proxy:
-                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"), proxy=self._proxy)
-            else:
-                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"))
+                client_options["proxy"] = self._proxy
+            self._client = Client(
+                url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"),
+                **client_options,
+            )
 
             ret_val, response = self._make_soap_call(action_result, "Connect", (self._username, self._password, self._tenant, "Admin"))
             if not ret_val:
