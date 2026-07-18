@@ -33,6 +33,7 @@ import ivantiitsm_consts as consts
 
 MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
 UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
+SENSITIVE_RESPONSE_FIELDS = frozenset({"internalauthpasswd", "tempinternalauthpassword"})
 
 
 class _LimitedResponse:
@@ -153,7 +154,18 @@ class HeatConnector(BaseConnector):
         except Exception as e:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "SOAP call to ITSM failed", e), None)
 
-        return True, self._suds_to_dict(response)
+        return True, self._strip_sensitive_fields(self._suds_to_dict(response))
+
+    def _strip_sensitive_fields(self, value):
+        if isinstance(value, dict):
+            return {
+                key: self._strip_sensitive_fields(child)
+                for key, child in value.items()
+                if key.casefold() not in SENSITIVE_RESPONSE_FIELDS
+            }
+        if isinstance(value, list):
+            return [self._strip_sensitive_fields(child) for child in value]
+        return value
 
     def _suds_to_dict(self, sud_obj):
         if hasattr(sud_obj, "__keylist__"):
