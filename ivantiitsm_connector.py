@@ -260,15 +260,15 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
+        poll_end_time = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+        update_checkpoint = not self.is_poll_now()
         if self.is_poll_now():
             start_time = (datetime.utcnow() - timedelta(days=int(config["poll_now_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
         elif self._state.get("first_run", True):
-            self._state["first_run"] = False
             start_time = (datetime.utcnow() - timedelta(days=int(config["first_scheduled_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
-            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
         else:
-            start_time = self._state["last_time"]
-            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+            checkpoint = datetime.strptime(self._state["last_time"], consts.HEAT_TIME_FORMAT) - timedelta(seconds=1)
+            start_time = checkpoint.strftime(consts.HEAT_TIME_FORMAT)
 
         from_date_obj = self._client.factory.create("RuleClass")
         from_date_obj._Condition = ">"
@@ -305,16 +305,24 @@ class HeatConnector(BaseConnector):
 
         tickets = response.get("objList", {}).get("ArrayOfWebServiceBusinessObject", {})
         if not tickets:
+            if update_checkpoint:
+                self._state["first_run"] = False
+                self._state["last_time"] = poll_end_time
             return action_result.set_status(phantom.APP_SUCCESS, "No tickets to ingest")
 
+        failed_tickets = 0
         for ticket in tickets:
             ticket = ticket.get("WebServiceBusinessObject", [{}])[0]
 
             if not ticket:
+                failed_tickets += 1
                 continue
 
-            ticket_id = ticket["RecID"]
-            ticket = ticket["FieldValues"]
+            ticket_id = ticket.get("RecID")
+            ticket = ticket.get("FieldValues", {})
+            if not ticket_id or not ticket.get("Subject") or not ticket.get("Symptom"):
+                failed_tickets += 1
+                continue
 
             container = {}
             container["name"] = ticket["Subject"]
@@ -324,7 +332,9 @@ class HeatConnector(BaseConnector):
             ret_val, message, container_id = self.save_container(container)
 
             if phantom.is_fail(ret_val):
-                return action_result.set_status(phantom.APP_ERROR, message)
+                failed_tickets += 1
+                self.debug_print(f"Could not save Ivanti ticket {ticket_id}: {message}")
+                continue
 
             artifact = {}
             artifact["label"] = "ticket"
@@ -347,6 +357,16 @@ class HeatConnector(BaseConnector):
             }
 
             self.save_artifact(artifact)
+
+        if failed_tickets:
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                f"Failed to ingest {failed_tickets} Ivanti ticket(s); the polling checkpoint was not advanced",
+            )
+
+        if update_checkpoint:
+            self._state["first_run"] = False
+            self._state["last_time"] = poll_end_time
         self.debug_print("on poll action succeeded.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
