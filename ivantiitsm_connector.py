@@ -1,6 +1,6 @@
 # File: ivantiitsm_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ from suds.sudsobject import asdict
 from suds.transport.http import HttpAuthenticated
 
 import ivantiitsm_consts as consts
+
 
 MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
 UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
@@ -158,11 +159,7 @@ class HeatConnector(BaseConnector):
 
     def _strip_sensitive_fields(self, value):
         if isinstance(value, dict):
-            return {
-                key: self._strip_sensitive_fields(child)
-                for key, child in value.items()
-                if key.casefold() not in SENSITIVE_RESPONSE_FIELDS
-            }
+            return {key: self._strip_sensitive_fields(child) for key, child in value.items() if key.casefold() not in SENSITIVE_RESPONSE_FIELDS}
         if isinstance(value, list):
             return [self._strip_sensitive_fields(child) for child in value]
         return value

@@ -746,7 +746,6 @@ action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusin
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IdentityId | string | | 9f269009-2119-e411-84ee-005056a60016 050f8ac7-3450-e711-948c-061b2fd21d7a |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InitialNotReadyReasonValue | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InitialNotReadyReasonValue_Valid | string | | |
-action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InternalAuthPasswd | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InternalPwdDateTime | string | | 2017-06-13 04:25:34 2017-06-21 16:00:00 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IsAutoProvisioned | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IsExternalAuth | boolean | | True False |
@@ -818,7 +817,6 @@ action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusin
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TeamEmail | string | `email` | test@phantom.us |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TeamManagerEmail | string | `email` | test@phantom.us |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.Team_Valid | string | `md5` | 10F60157A4F34A4F9DDB140E2328C7A6 2E4BABD54FB9420D94F836F0D9B80C47 |
-action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TempInternalAuthPassword | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TempPwdDatetime | string | | 2016-09-02 09:46:35 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TerminatedDate | string | | 2008-09-17 00:00:00 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.Title | string | | IT Manager |
@@ -951,7 +949,6 @@ action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusin
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IdentityId | string | | 9f269009-2119-e411-84ee-005056a60016 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InitialNotReadyReasonValue | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InitialNotReadyReasonValue_Valid | string | | |
-action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InternalAuthPasswd | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.InternalPwdDateTime | string | | 2017-06-13 04:25:34 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IsAutoProvisioned | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.IsExternalAuth | boolean | | True False |
@@ -1023,7 +1020,6 @@ action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusin
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TeamEmail | string | `email` | test@phantom.us |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TeamManagerEmail | string | `email` | test@phantom.us |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.Team_Valid | string | `md5` | 10F60157A4F34A4F9DDB140E2328C7A6 |
-action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TempInternalAuthPassword | string | | |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TempPwdDatetime | string | | 2016-09-02 09:46:35 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.TerminatedDate | string | | 2008-09-17 00:00:00 |
 action_result.data.\*.objList.ArrayOfWebServiceBusinessObject.\*.WebServiceBusinessObject.\*.FieldValues.Title | string | | IT Manager |
@@ -1070,7 +1066,7 @@ ______________________________________________________________________
 
 Auto-generated Splunk SOAR Connector documentation.
 
-Copyright 2025 Splunk Inc.
+Copyright 2026 Splunk Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
