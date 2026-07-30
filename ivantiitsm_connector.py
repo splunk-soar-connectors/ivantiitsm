@@ -40,14 +40,17 @@ SENSITIVE_RESPONSE_FIELDS = frozenset({"internalauthpasswd", "tempinternalauthpa
 class _LimitedResponse:
     def __init__(self, response):
         self._response = response
+        self._bytes_read = 0
 
     def __getattr__(self, name):
         return getattr(self._response, name)
 
     def read(self, size=None):
-        read_size = MAX_XML_RESPONSE_BYTES + 1 if size is None else min(size, MAX_XML_RESPONSE_BYTES + 1)
+        remaining = MAX_XML_RESPONSE_BYTES - self._bytes_read
+        read_size = remaining + 1 if size is None else min(size, remaining + 1)
         content = self._response.read(read_size)
-        if len(content) > MAX_XML_RESPONSE_BYTES:
+        self._bytes_read += len(content)
+        if self._bytes_read > MAX_XML_RESPONSE_BYTES:
             raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
         return content
 
