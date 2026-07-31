@@ -1,6 +1,6 @@
 # File: ivantiitsm_connector.py
 #
-# Copyright (c) 2017-2025 Splunk Inc.
+# Copyright (c) 2017-2026 Splunk Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,9 +25,56 @@ import phantom.rules as ph_rules
 from phantom.action_result import ActionResult
 from phantom.base_connector import BaseConnector
 from suds.client import Client
+from suds.plugin import DocumentPlugin, MessagePlugin
 from suds.sudsobject import asdict
+from suds.transport.http import HttpAuthenticated
 
 import ivantiitsm_consts as consts
+
+
+MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
+UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
+SENSITIVE_RESPONSE_FIELDS = frozenset({"internalauthpasswd", "tempinternalauthpassword"})
+
+
+class _LimitedResponse:
+    def __init__(self, response):
+        self._response = response
+        self._bytes_read = 0
+
+    def __getattr__(self, name):
+        return getattr(self._response, name)
+
+    def read(self, size=None):
+        remaining = MAX_XML_RESPONSE_BYTES - self._bytes_read
+        read_size = remaining + 1 if size is None else min(size, remaining + 1)
+        content = self._response.read(read_size)
+        self._bytes_read += len(content)
+        if self._bytes_read > MAX_XML_RESPONSE_BYTES:
+            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
+        return content
+
+
+class _LimitedHttpTransport(HttpAuthenticated):
+    def u2open(self, request):
+        return _LimitedResponse(super().u2open(request))
+
+
+class _RejectUnsafeXmlPlugin(DocumentPlugin, MessagePlugin):
+    @staticmethod
+    def _validate(payload):
+        content = payload.encode("utf-8") if isinstance(payload, str) else bytes(payload)
+        if len(content) > MAX_XML_RESPONSE_BYTES:
+            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
+        upper_content = content.upper()
+        if any(marker in upper_content for marker in UNSAFE_XML_MARKERS):
+            raise ValueError("Ivanti ITSM XML response contains a prohibited DTD or entity declaration")
+
+    def loaded(self, context):
+        self._validate(context.document)
+
+    def received(self, context):
+        self._validate(context.reply)
 
 
 class RetVal(tuple):
@@ -78,10 +125,16 @@ class HeatConnector(BaseConnector):
 
     def _connect(self, action_result):
         try:
+            client_options = {
+                "plugins": [_RejectUnsafeXmlPlugin()],
+                "transport": _LimitedHttpTransport(),
+            }
             if self._proxy:
-                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"), proxy=self._proxy)
-            else:
-                self._client = Client(url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"))
+                client_options["proxy"] = self._proxy
+            self._client = Client(
+                url="{}{}".format(self._base_url, "ServiceAPI/FRSHEATIntegration.asmx?wsdl"),
+                **client_options,
+            )
 
             ret_val, response = self._make_soap_call(action_result, "Connect", (self._username, self._password, self._tenant, "Admin"))
             if not ret_val:
@@ -105,7 +158,14 @@ class HeatConnector(BaseConnector):
         except Exception as e:
             return RetVal(action_result.set_status(phantom.APP_ERROR, "SOAP call to ITSM failed", e), None)
 
-        return True, self._suds_to_dict(response)
+        return True, self._strip_sensitive_fields(self._suds_to_dict(response))
+
+    def _strip_sensitive_fields(self, value):
+        if isinstance(value, dict):
+            return {key: self._strip_sensitive_fields(child) for key, child in value.items() if key.casefold() not in SENSITIVE_RESPONSE_FIELDS}
+        if isinstance(value, list):
+            return [self._strip_sensitive_fields(child) for child in value]
+        return value
 
     def _suds_to_dict(self, sud_obj):
         if hasattr(sud_obj, "__keylist__"):
@@ -212,15 +272,15 @@ class HeatConnector(BaseConnector):
         if phantom.is_fail(ret_val):
             return ret_val
 
+        poll_end_time = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+        update_checkpoint = not self.is_poll_now()
         if self.is_poll_now():
             start_time = (datetime.utcnow() - timedelta(days=int(config["poll_now_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
         elif self._state.get("first_run", True):
-            self._state["first_run"] = False
             start_time = (datetime.utcnow() - timedelta(days=int(config["first_scheduled_ingestion_span"]))).strftime(consts.HEAT_TIME_FORMAT)
-            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
         else:
-            start_time = self._state["last_time"]
-            self._state["last_time"] = datetime.utcnow().strftime(consts.HEAT_TIME_FORMAT)
+            checkpoint = datetime.strptime(self._state["last_time"], consts.HEAT_TIME_FORMAT) - timedelta(seconds=1)
+            start_time = checkpoint.strftime(consts.HEAT_TIME_FORMAT)
 
         from_date_obj = self._client.factory.create("RuleClass")
         from_date_obj._Condition = ">"
@@ -257,16 +317,24 @@ class HeatConnector(BaseConnector):
 
         tickets = response.get("objList", {}).get("ArrayOfWebServiceBusinessObject", {})
         if not tickets:
+            if update_checkpoint:
+                self._state["first_run"] = False
+                self._state["last_time"] = poll_end_time
             return action_result.set_status(phantom.APP_SUCCESS, "No tickets to ingest")
 
+        failed_tickets = 0
         for ticket in tickets:
             ticket = ticket.get("WebServiceBusinessObject", [{}])[0]
 
             if not ticket:
+                failed_tickets += 1
                 continue
 
-            ticket_id = ticket["RecID"]
-            ticket = ticket["FieldValues"]
+            ticket_id = ticket.get("RecID")
+            ticket = ticket.get("FieldValues", {})
+            if not ticket_id or not ticket.get("Subject") or not ticket.get("Symptom"):
+                failed_tickets += 1
+                continue
 
             container = {}
             container["name"] = ticket["Subject"]
@@ -276,7 +344,9 @@ class HeatConnector(BaseConnector):
             ret_val, message, container_id = self.save_container(container)
 
             if phantom.is_fail(ret_val):
-                return action_result.set_status(phantom.APP_ERROR, message)
+                failed_tickets += 1
+                self.debug_print(f"Could not save Ivanti ticket {ticket_id}: {message}")
+                continue
 
             artifact = {}
             artifact["label"] = "ticket"
@@ -299,6 +369,16 @@ class HeatConnector(BaseConnector):
             }
 
             self.save_artifact(artifact)
+
+        if failed_tickets:
+            return action_result.set_status(
+                phantom.APP_ERROR,
+                f"Failed to ingest {failed_tickets} Ivanti ticket(s); the polling checkpoint was not advanced",
+            )
+
+        if update_checkpoint:
+            self._state["first_run"] = False
+            self._state["last_time"] = poll_end_time
         self.debug_print("on poll action succeeded.")
         return action_result.set_status(phantom.APP_SUCCESS)
 
