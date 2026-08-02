@@ -42,3 +42,10 @@ class XmlValidationTest(unittest.TestCase):
 
         with self.assertRaisesRegex(ValueError, "prohibited DTD"):
             limited.read()
+
+    def test_rejects_malformed_utf16_instead_of_falling_back(self):
+        xml = "<?xml version='1.0'?><!DOCTYPE r [<!ENTITY a 'value'>]><r>&a;</r>"
+        malformed = xml.encode("utf-16") + b"\x00"
+
+        with self.assertRaisesRegex(ValueError, "invalid or unsupported encoding"):
+            reject_unsafe_xml_declarations(malformed)

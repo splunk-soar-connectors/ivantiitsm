@@ -69,7 +69,7 @@ def reject_unsafe_xml_declarations(payload: bytes | str) -> None:
         content = bytes(payload)
         try:
             xml_text = decode_xml_for_validation(content)
-        except UnicodeDecodeError:
-            xml_text = content.decode("latin-1")
+        except UnicodeDecodeError as error:
+            raise ValueError("Ivanti ITSM XML response uses an invalid or unsupported encoding") from error
     if UNSAFE_XML_DECLARATION.search(xml_text):
         raise ValueError("Ivanti ITSM XML response contains a prohibited DTD or entity declaration")
