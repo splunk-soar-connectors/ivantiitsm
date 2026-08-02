@@ -32,6 +32,12 @@ class XmlValidationTest(unittest.TestCase):
             with self.subTest(encoding=encoding), self.assertRaises(ValueError):
                 reject_unsafe_xml_declarations(xml.encode(encoding))
 
+    def test_rejects_bomless_encoded_dtds_after_leading_whitespace(self):
+        xml = " \n<!DOCTYPE r [<!ENTITY a 'value'>]><r attr='&a;'/>"
+        for encoding in ("utf-16-le", "utf-16-be", "utf-32-le", "utf-32-be"):
+            with self.subTest(encoding=encoding), self.assertRaises(ValueError):
+                reject_unsafe_xml_declarations(xml.encode(encoding))
+
     def test_accepts_plain_xml(self):
         reject_unsafe_xml_declarations("<?xml version='1.0'?><response/>")
 

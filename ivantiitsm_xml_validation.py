@@ -50,13 +50,13 @@ def decode_xml_for_validation(content: bytes) -> str:
         return content.decode("utf-32")
     if content.startswith((codecs.BOM_UTF16_LE, codecs.BOM_UTF16_BE)):
         return content.decode("utf-16")
-    if content.startswith(b"\x00\x00\x00<"):
+    if len(content) >= 4 and content[:3] == b"\x00\x00\x00" and content[3] != 0:
         return content.decode("utf-32-be")
-    if content.startswith(b"<\x00\x00\x00"):
+    if len(content) >= 4 and content[0] != 0 and content[1:4] == b"\x00\x00\x00":
         return content.decode("utf-32-le")
-    if content.startswith(b"\x00<"):
+    if len(content) >= 2 and content[0] == 0 and content[1] != 0:
         return content.decode("utf-16-be")
-    if content.startswith(b"<\x00"):
+    if len(content) >= 2 and content[0] != 0 and content[1] == 0:
         return content.decode("utf-16-le")
     return content.decode("utf-8")
 
