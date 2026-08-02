@@ -30,10 +30,10 @@ from suds.sudsobject import asdict
 from suds.transport.http import HttpAuthenticated
 
 import ivantiitsm_consts as consts
+from ivantiitsm_xml_validation import reject_unsafe_xml_declarations
 
 
 MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
-UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
 SENSITIVE_RESPONSE_FIELDS = frozenset({"internalauthpasswd", "tempinternalauthpassword"})
 
 
@@ -66,9 +66,7 @@ class _RejectUnsafeXmlPlugin(DocumentPlugin, MessagePlugin):
         content = payload.encode("utf-8") if isinstance(payload, str) else bytes(payload)
         if len(content) > MAX_XML_RESPONSE_BYTES:
             raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
-        upper_content = content.upper()
-        if any(marker in upper_content for marker in UNSAFE_XML_MARKERS):
-            raise ValueError("Ivanti ITSM XML response contains a prohibited DTD or entity declaration")
+        reject_unsafe_xml_declarations(payload)
 
     def loaded(self, context):
         self._validate(context.document)
