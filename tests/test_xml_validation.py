@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import unittest
+from unittest import mock
 
-from ivantiitsm_xml_validation import decode_xml_for_validation, reject_unsafe_xml_declarations
+from ivantiitsm_xml_validation import LimitedXmlResponse, decode_xml_for_validation, reject_unsafe_xml_declarations
 
 
 class XmlValidationTest(unittest.TestCase):
@@ -33,3 +34,11 @@ class XmlValidationTest(unittest.TestCase):
 
     def test_accepts_plain_xml(self):
         reject_unsafe_xml_declarations("<?xml version='1.0'?><response/>")
+
+    def test_limited_response_rejects_declaration_before_returning_content(self):
+        response = mock.Mock()
+        response.read.return_value = b'<!DOCTYPE x [<!ENTITY a "x">]><x>&a;</x>'
+        limited = LimitedXmlResponse(response, 1024)
+
+        with self.assertRaisesRegex(ValueError, "prohibited DTD"):
+            limited.read()

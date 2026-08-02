@@ -20,6 +20,28 @@ import re
 UNSAFE_XML_DECLARATION = re.compile(r"<!\s*(?:doctype|entity)\b", re.IGNORECASE)
 
 
+class LimitedXmlResponse:
+    """Bound and validate a suds response before its XML parser receives it."""
+
+    def __init__(self, response, max_bytes: int):
+        self._response = response
+        self._max_bytes = max_bytes
+        self._content = bytearray()
+
+    def __getattr__(self, name):
+        return getattr(self._response, name)
+
+    def read(self, size=None):
+        remaining = self._max_bytes - len(self._content)
+        read_size = remaining + 1 if size is None else min(size, remaining + 1)
+        content = self._response.read(read_size)
+        self._content.extend(content)
+        if len(self._content) > self._max_bytes:
+            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
+        reject_unsafe_xml_declarations(self._content)
+        return content
+
+
 def decode_xml_for_validation(content: bytes) -> str:
     """Decode XML syntax using its BOM or leading-byte encoding signature."""
     if content.startswith(codecs.BOM_UTF8):
