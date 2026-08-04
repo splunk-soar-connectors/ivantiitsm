@@ -19,6 +19,7 @@ import base64
 import json
 import math
 from datetime import datetime, timedelta
+from urllib.error import HTTPError
 
 import phantom.app as phantom
 import phantom.rules as ph_rules
@@ -30,34 +31,20 @@ from suds.sudsobject import asdict
 from suds.transport.http import HttpAuthenticated
 
 import ivantiitsm_consts as consts
+from ivantiitsm_xml_validation import LimitedXmlResponse, reject_unsafe_xml_declarations
 
 
 MAX_XML_RESPONSE_BYTES = 16 * 1024 * 1024
-UNSAFE_XML_MARKERS = (b"<!DOCTYPE", b"<!ENTITY")
 SENSITIVE_RESPONSE_FIELDS = frozenset({"internalauthpasswd", "tempinternalauthpassword"})
-
-
-class _LimitedResponse:
-    def __init__(self, response):
-        self._response = response
-        self._bytes_read = 0
-
-    def __getattr__(self, name):
-        return getattr(self._response, name)
-
-    def read(self, size=None):
-        remaining = MAX_XML_RESPONSE_BYTES - self._bytes_read
-        read_size = remaining + 1 if size is None else min(size, remaining + 1)
-        content = self._response.read(read_size)
-        self._bytes_read += len(content)
-        if self._bytes_read > MAX_XML_RESPONSE_BYTES:
-            raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
-        return content
 
 
 class _LimitedHttpTransport(HttpAuthenticated):
     def u2open(self, request):
-        return _LimitedResponse(super().u2open(request))
+        try:
+            return LimitedXmlResponse(super().u2open(request), MAX_XML_RESPONSE_BYTES)
+        except HTTPError as error:
+            error.fp = LimitedXmlResponse(error.fp, MAX_XML_RESPONSE_BYTES)
+            raise
 
 
 class _RejectUnsafeXmlPlugin(DocumentPlugin, MessagePlugin):
@@ -66,9 +53,7 @@ class _RejectUnsafeXmlPlugin(DocumentPlugin, MessagePlugin):
         content = payload.encode("utf-8") if isinstance(payload, str) else bytes(payload)
         if len(content) > MAX_XML_RESPONSE_BYTES:
             raise ValueError("Ivanti ITSM XML response exceeds the 16 MiB safety limit")
-        upper_content = content.upper()
-        if any(marker in upper_content for marker in UNSAFE_XML_MARKERS):
-            raise ValueError("Ivanti ITSM XML response contains a prohibited DTD or entity declaration")
+        reject_unsafe_xml_declarations(payload)
 
     def loaded(self, context):
         self._validate(context.document)
